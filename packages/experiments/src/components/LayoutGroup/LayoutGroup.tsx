@@ -1,9 +1,8 @@
 
 import * as React from 'react';
-import { ILayoutGroupProps } from './LayoutGroup.props';
+import { ILayoutGroupProps } from './LayoutGroup.types';
 import { IRawStyle, mergeStyles } from 'office-ui-fabric-react/lib/Styling';
 import {
-  autobind,
   getNativeProps,
   divProperties
 } from 'office-ui-fabric-react/lib/Utilities';
@@ -24,7 +23,7 @@ export class LayoutGroup extends React.Component<ILayoutGroupProps, {}> {
       justify,
     } = this.props;
 
-    let divProps = getNativeProps(this.props, divProperties);
+    const divProps = getNativeProps(this.props, divProperties);
 
     const numberOfChildren = React.Children.count(children);
 
@@ -76,8 +75,7 @@ export class LayoutGroup extends React.Component<ILayoutGroupProps, {}> {
     );
   }
 
-  @autobind
-  private _getJustify(justify: string | undefined): string {
+  private _getJustify = (justify: string | undefined): string => {
     if (justify === 'end') {
       return 'flex-end';
     } else if (justify === 'center') {

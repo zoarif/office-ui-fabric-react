@@ -1,13 +1,11 @@
-/* tslint:disable:no-unused-variable */
 import * as React from 'react';
-/* tslint:enable:no-unused-variable */
 
 import * as ReactDOM from 'react-dom';
 import * as ReactTestUtils from 'react-dom/test-utils';
 
 import { SelectionZone } from './SelectionZone';
 import { Selection } from './Selection';
-import { SelectionMode } from './interfaces';
+import { SelectionMode, IObjectWithKey } from './interfaces';
 
 import { KeyCodes } from '../../Utilities';
 
@@ -19,23 +17,22 @@ let _surface0: Element;
 let _invoke0: Element;
 let _toggle0: Element;
 let _surface1: Element;
-let _invoke1: Element;
 let _toggle1: Element;
-let _invoke2: Element;
 let _toggle2: Element;
 let _surface3: Element;
 
 let _onItemInvokeCalled: number;
 let _lastItemInvoked: any;
 
-function _initializeSelection(selectionMode = SelectionMode.multiple) {
+function _initializeSelection(selectionMode = SelectionMode.multiple): void {
   _selection = new Selection();
   _selection.setItems([{ key: 'a', }, { key: 'b' }, { key: 'c' }, { key: 'd' }]);
   _selectionZone = ReactTestUtils.renderIntoDocument(
     <SelectionZone
       selection={ _selection }
       selectionMode={ selectionMode }
-      onItemInvoked={ (item) => { _onItemInvokeCalled++; _lastItemInvoked = item; } }
+      // tslint:disable-next-line:jsx-no-lambda
+      onItemInvoked={ (item: IObjectWithKey) => { _onItemInvokeCalled++; _lastItemInvoked = item; } }
     >
 
       <button id='toggleAll' data-selection-all-toggle={ true }>Toggle all selected</button>
@@ -59,15 +56,13 @@ function _initializeSelection(selectionMode = SelectionMode.multiple) {
     </SelectionZone>
   );
 
-  _componentElement = ReactDOM.findDOMNode(_selectionZone);
+  _componentElement = ReactDOM.findDOMNode(_selectionZone) as Element;
   _toggleAll = _componentElement.querySelector('#toggleAll')!;
   _surface0 = _componentElement.querySelector('#surface0')!;
   _invoke0 = _componentElement.querySelector('#invoke0')!;
   _toggle0 = _componentElement.querySelector('#toggle0')!;
   _surface1 = _componentElement.querySelector('#surface1')!;
-  _invoke1 = _componentElement.querySelector('#invoke1')!;
   _toggle1 = _componentElement.querySelector('#toggle1')!;
-  _invoke2 = _componentElement.querySelector('#invoke2')!;
   _toggle2 = _componentElement.querySelector('#toggle2')!;
   _surface3 = _componentElement.querySelector('#surface3')!;
 
@@ -98,12 +93,12 @@ describe('SelectionZone', () => {
     expect(_onItemInvokeCalled).toEqual(0);
   });
 
-  it('selects an unselected item on mousedown of invoke without modifiers pressed', () => {
+  it('selects an unselected item on mousedown of surface without modifiers pressed', () => {
     _selection.setAllSelected(true);
     _selection.setIndexSelected(0, false, true);
 
     // Mousedown on the only unselected item's invoke surface should deselect all and select that one.
-    ReactTestUtils.Simulate.mouseDown(_invoke0);
+    ReactTestUtils.Simulate.mouseDown(_surface0);
     expect(_selection.isIndexSelected(0)).toEqual(true);
     expect(_selection.getSelectedCount()).toEqual(1);
   });
@@ -133,9 +128,9 @@ describe('SelectionZone', () => {
     expect(_onItemInvokeCalled).toEqual(0);
   });
 
-  it('does not select an unselected item on mousedown of item surface element', () => {
+  it('selects an unselected item on mousedown of item surface element', () => {
     ReactTestUtils.Simulate.mouseDown(_surface0);
-    expect(_selection.isIndexSelected(0)).toEqual(false);
+    expect(_selection.isIndexSelected(0)).toEqual(true);
   });
 
   it('invokes an item on double clicking the surface element', () => {
@@ -158,7 +153,7 @@ describe('SelectionZone', () => {
     expect(_selection.getSelectedCount()).toEqual(0);
   });
 
-  it('suports mouse shift click range select scenarios', () => {
+  it('supports mouse shift click range select scenarios', () => {
     _simulateClick(_surface1);
     expect(_selection.getSelectedCount()).toEqual(1);
 
@@ -227,9 +222,15 @@ describe('SelectionZone', () => {
 
     expect(_selection.getSelectedCount()).toEqual(0);
   });
+
+  it('does not select an item on mousedown of the surface with no modifiers', () => {
+    ReactTestUtils.Simulate.mouseDown(_invoke0);
+    expect(_selection.isIndexSelected(0)).toEqual(false);
+    expect(_onItemInvokeCalled).toEqual(0);
+  });
 });
 
-function _simulateClick(el: Element, eventData?: ReactTestUtils.SyntheticEventData) {
+function _simulateClick(el: Element, eventData?: ReactTestUtils.SyntheticEventData): void {
   ReactTestUtils.Simulate.mouseDown(el, eventData);
   ReactTestUtils.Simulate.focus(el, eventData);
   ReactTestUtils.Simulate.click(el, eventData);

@@ -1,4 +1,4 @@
-import { IButtonStyles } from './Button.Props';
+import { IButtonStyles } from './Button.types';
 import { memoizeFunction } from '../../Utilities';
 import {
   ITheme,
@@ -18,7 +18,8 @@ const iconStyle = {
   height: '16px',
   lineHeight: '16px',
   textAlign: 'center',
-  verticalAlign: 'middle'
+  verticalAlign: 'middle',
+  flexShrink: 0
 };
 
 /**
@@ -29,15 +30,27 @@ const iconStyle = {
 export const getStyles = memoizeFunction((
   theme: ITheme
 ): IButtonStyles => {
+  const { semanticColors } = theme;
+
+  const border = semanticColors.buttonBorder;
+  const disabledBackground = semanticColors.disabledBackground;
+  const disabledText = semanticColors.disabledText;
+  const buttonHighContrastFocus = {
+    left: -2,
+    top: -2,
+    bottom: -2,
+    right: -2,
+    border: 'none',
+    outlineColor: 'ButtonText'
+  };
 
   return {
     root: [
-      getFocusStyle(theme, -1),
+      getFocusStyle(theme, -1, 'relative', buttonHighContrastFocus),
       theme.fonts.medium,
       {
-        // this transparent border converts to the correct colors in HC mode
         boxSizing: 'border-box',
-        border: '1px solid transparent',
+        border: '1px solid ' + border,
         userSelect: 'none',
         display: 'inline-block',
         textDecoration: 'none',
@@ -50,8 +63,8 @@ export const getStyles = memoizeFunction((
     ],
 
     rootDisabled: {
-      backgroundColor: theme.palette.neutralLighter,
-      color: theme.palette.neutralTertiary,
+      backgroundColor: disabledBackground,
+      color: disabledText,
       cursor: 'default',
       pointerEvents: 'none',
       selectors: {
@@ -61,11 +74,11 @@ export const getStyles = memoizeFunction((
     },
 
     iconDisabled: {
-      color: theme.palette.neutralTertiary
+      color: disabledText
     },
 
     menuIconDisabled: {
-      color: theme.palette.neutralTertiary
+      color: disabledText
     },
 
     flexContainer: {

@@ -1,6 +1,4 @@
-/* tslint:disable:no-unused-variable */
 import * as React from 'react';
-/* tslint:enable:no-unused-variable */
 import { BaseComponent, css } from 'office-ui-fabric-react/lib/Utilities';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { Link } from 'office-ui-fabric-react/lib/Link';
@@ -14,7 +12,7 @@ const styles: any = stylesImport;
 
 export class OverflowSetBasicExample extends BaseComponent<any, any> {
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <OverflowSet
         items={ [
@@ -68,8 +66,7 @@ export class OverflowSetBasicExample extends BaseComponent<any, any> {
     return (
       <IconButton
         className={ css(styles.overflowButton) }
-        iconProps={ { iconName: 'More' } }
-        menuIconProps={ undefined }
+        menuIconProps={ { iconName: 'More' } }
         menuProps={ { items: overflowItems! } }
       />
     );

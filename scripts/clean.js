@@ -6,8 +6,9 @@ const path = require('path');
   'temp',
   'dist',
   'lib-amd',
-  'lib-es6',
-  'coverage'
+  'lib-es2015',
+  'coverage',
+  'src/**/*.scss.ts'
 ].forEach(folder => {
   rimraf(path.resolve(process.cwd(), folder));
 });

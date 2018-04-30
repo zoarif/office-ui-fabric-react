@@ -131,13 +131,18 @@ export function getFirstFocusable(rootElement: HTMLElement,
 export function getId(prefix?: string): string;
 
 // @public
-export function getInitials(displayName: string | undefined | null, isRtl: boolean): string;
+export function getInitials(displayName: string | undefined | null, isRtl: boolean, allowPhoneInitials?: boolean): string;
 
 // @public
 export function getLanguage(): string | null;
 
 // @public
 export function getLastFocusable(rootElement: HTMLElement,
+  currentElement: HTMLElement,
+  includeElementsInFocusZones?: boolean): HTMLElement | null;
+
+// @public
+export function getLastTabbable(rootElement: HTMLElement,
   currentElement: HTMLElement,
   includeElementsInFocusZones?: boolean): HTMLElement | null;
 

@@ -26,11 +26,11 @@ const DIRECTION_OPTIONS = [
   { key: DirectionalHint.rightBottomEdge, text: 'Right Bottom Edge' },
 ];
 
-export class CalloutCoverExample extends React.Component<any, ICalloutCoverExampleState> {
-  private _menuButtonElement: HTMLElement;
+export class CalloutCoverExample extends React.Component<{}, ICalloutCoverExampleState> {
+  private _menuButtonElement: HTMLElement | null;
 
-  public constructor() {
-    super();
+  public constructor(props: {}) {
+    super(props);
 
     this._onDismiss = this._onDismiss.bind(this);
     this._onShowMenuClicked = this._onShowMenuClicked.bind(this);
@@ -42,8 +42,8 @@ export class CalloutCoverExample extends React.Component<any, ICalloutCoverExamp
     };
   }
 
-  public render() {
-    let { isCalloutVisible, directionalHint } = this.state;
+  public render(): JSX.Element {
+    const { isCalloutVisible, directionalHint } = this.state;
     // ms-Callout-smallbeak is used in this directional example to reflect all the positions. Large beak will disable some position to avoid beak over the callout edge.
     return (
       <div className='ms-CalloutExample'>
@@ -55,7 +55,7 @@ export class CalloutCoverExample extends React.Component<any, ICalloutCoverExamp
             onChanged={ this._onDirectionalChanged }
           />
         </div>
-        <div className='ms-CalloutCoverExample-buttonArea' ref={ (menuButton) => this._menuButtonElement = menuButton! }>
+        <div className='ms-CalloutCoverExample-buttonArea' ref={ (menuButton) => this._menuButtonElement = menuButton }>
           <DefaultButton
             text={ isCalloutVisible ? 'Hide callout' : 'Show callout' }
             onClick={ this._onShowMenuClicked }
@@ -90,17 +90,17 @@ export class CalloutCoverExample extends React.Component<any, ICalloutCoverExamp
     );
   }
 
-  private _onDismiss() {
+  private _onDismiss(): void {
     this.setState({ isCalloutVisible: false });
   }
 
-  private _onShowMenuClicked() {
+  private _onShowMenuClicked(): void {
     this.setState({
       isCalloutVisible: !this.state.isCalloutVisible
     });
   }
 
-  private _onDirectionalChanged(option: IDropdownOption) {
+  private _onDirectionalChanged(option: IDropdownOption): void {
     this.setState({
       directionalHint: option.key as number
     });

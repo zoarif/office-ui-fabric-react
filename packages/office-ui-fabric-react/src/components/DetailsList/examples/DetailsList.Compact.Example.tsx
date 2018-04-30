@@ -1,6 +1,4 @@
-/* tslint:disable:no-unused-variable */
 import * as React from 'react';
-/* tslint:enable:no-unused-variable */
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import {
   DetailsList,
@@ -8,15 +6,14 @@ import {
   Selection
 } from 'office-ui-fabric-react/lib/DetailsList';
 import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
-import { autobind } from 'office-ui-fabric-react/lib/Utilities';
 
-let _items: {
+const _items: {
   key: number,
   name: string,
   value: number
 }[] = [];
 
-let _columns = [
+const _columns = [
   {
     key: 'column1',
     name: 'Name',
@@ -35,11 +32,14 @@ let _columns = [
   },
 ];
 
-export class DetailsListCompactExample extends React.Component<any, any> {
+export class DetailsListCompactExample extends React.Component<{}, {
+  items: {}[];
+  selectionDetails: string;
+}> {
   private _selection: Selection;
 
-  constructor() {
-    super();
+  constructor(props: {}) {
+    super(props);
 
     // Populate with items for demos.
     if (_items.length === 0) {
@@ -62,8 +62,8 @@ export class DetailsListCompactExample extends React.Component<any, any> {
     };
   }
 
-  public render() {
-    let { items, selectionDetails } = this.state;
+  public render(): JSX.Element {
+    const { items, selectionDetails } = this.state;
 
     return (
       <div>
@@ -89,7 +89,7 @@ export class DetailsListCompactExample extends React.Component<any, any> {
   }
 
   private _getSelectionDetails(): string {
-    let selectionCount = this._selection.getSelectedCount();
+    const selectionCount = this._selection.getSelectedCount();
 
     switch (selectionCount) {
       case 0:
@@ -101,8 +101,7 @@ export class DetailsListCompactExample extends React.Component<any, any> {
     }
   }
 
-  @autobind
-  private _onChanged(text: any): void {
+  private _onChanged = (text: any): void => {
     this.setState({ items: text ? _items.filter(i => i.name.toLowerCase().indexOf(text) > -1) : _items });
   }
 

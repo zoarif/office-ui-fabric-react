@@ -1,17 +1,18 @@
 import * as React from 'react';
-import { autobind } from 'office-ui-fabric-react/lib/Utilities';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { Panel } from 'office-ui-fabric-react/lib/Panel';
 
-export class PanelLightDismissExample extends React.Component<any, any> {
+export class PanelLightDismissExample extends React.Component<{}, {
+  showPanel: boolean;
+}> {
 
-  constructor() {
-    super();
+  constructor(props: {}) {
+    super(props);
 
     this.state = { showPanel: false };
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <div>
         <DefaultButton
@@ -30,13 +31,11 @@ export class PanelLightDismissExample extends React.Component<any, any> {
     );
   }
 
-  @autobind
-  private _showPanel(): void {
+  private _showPanel = (): void => {
     this.setState({ showPanel: true });
   }
 
-  @autobind
-  private _hidePanel(): void {
+  private _hidePanel = (): void => {
     this.setState({ showPanel: false });
   }
 }

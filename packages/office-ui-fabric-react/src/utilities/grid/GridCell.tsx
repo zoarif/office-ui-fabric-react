@@ -1,22 +1,20 @@
 import * as React from 'react';
 import {
-  autobind,
   css,
   getId,
 } from '../../Utilities';
-import { IGridCellProps } from './GridCell.Props';
+import { IGridCellProps } from './GridCell.types';
 import { CommandButton } from '../../Button';
 
 export class GridCell<T, P extends IGridCellProps<T>> extends React.Component<P, {}> {
 
   public static defaultProps = {
-    cellShape: 'circle',
     disabled: false,
     id: getId('gridCell')
   };
 
-  public render() {
-    let {
+  public render(): JSX.Element {
+    const {
       item,
       id,
       className,
@@ -27,11 +25,13 @@ export class GridCell<T, P extends IGridCellProps<T>> extends React.Component<P,
       cellDisabledStyle,
       cellIsSelectedStyle,
       index,
-      label
+      label,
+      getClassNames
     } = this.props;
+
     return (
       <CommandButton
-        id={ id + '-item' + index }
+        id={ id }
         data-index={ index }
         data-is-focusable={ true }
         disabled={ disabled }
@@ -43,63 +43,82 @@ export class GridCell<T, P extends IGridCellProps<T>> extends React.Component<P,
         ) }
         onClick={ this._onClick }
         onMouseEnter={ this._onMouseEnter }
+        onMouseMove={ this._onMouseMove }
         onMouseLeave={ this._onMouseLeave }
         onFocus={ this._onFocus }
         role={ role }
         aria-selected={ selected }
         ariaLabel={ label }
         title={ label }
+        getClassNames={ getClassNames }
       >
         { onRenderItem(item) }
       </CommandButton >
     );
   }
 
-  @autobind
-  private _onClick() {
-    let {
+  private _onClick = (): void => {
+    const {
       onClick,
       disabled,
       item
-      } = this.props as P;
+    } = this.props as P;
 
     if (onClick && !disabled) {
       onClick(item);
     }
   }
 
-  @autobind
-  private _onMouseEnter() {
-    let {
+  private _onMouseEnter = (ev: React.MouseEvent<HTMLButtonElement>): void => {
+    const {
       onHover,
       disabled,
-      item
-      } = this.props as P;
+      item,
+      onMouseEnter
+    } = this.props as P;
 
-    if (onHover && !disabled) {
+    const didUpdateOnEnter = onMouseEnter && onMouseEnter(ev);
+
+    if (!didUpdateOnEnter && onHover && !disabled) {
       onHover(item);
     }
   }
 
-  @autobind
-  private _onMouseLeave() {
-    let {
+  private _onMouseMove = (ev: React.MouseEvent<HTMLButtonElement>): void => {
+    const {
       onHover,
-      disabled
-      } = this.props as P;
+      disabled,
+      item,
+      onMouseMove
+    } = this.props as P;
 
-    if (onHover && !disabled) {
+    const didUpdateOnMove = onMouseMove && onMouseMove(ev);
+
+    if (!didUpdateOnMove && onHover && !disabled) {
+      onHover(item);
+    }
+  }
+
+  private _onMouseLeave = (ev: React.MouseEvent<HTMLButtonElement>): void => {
+    const {
+      onHover,
+      disabled,
+      onMouseLeave
+    } = this.props as P;
+
+    const didUpdateOnLeave = onMouseLeave && onMouseLeave(ev);
+
+    if (!didUpdateOnLeave && onHover && !disabled) {
       onHover();
     }
   }
 
-  @autobind
-  private _onFocus() {
-    let {
+  private _onFocus = (): void => {
+    const {
       onFocus,
       disabled,
       item
-      } = this.props as P;
+    } = this.props as P;
 
     if (onFocus && !disabled) {
       onFocus(item);

@@ -10,18 +10,19 @@ export interface IFacepileAddFaceExampleState {
   numberOfFaces: number;
 }
 
-export class FacepileAddFaceExample extends React.Component<any, IFacepileAddFaceExampleState> {
-  public constructor() {
-    super();
+export class FacepileAddFaceExample extends React.Component<{}, IFacepileAddFaceExampleState> {
+
+  constructor(props: {}) {
+    super(props);
 
     this.state = {
       numberOfFaces: 0
     };
   }
 
-  public render() {
-    let { numberOfFaces } = this.state;
-    let facepileProps: IFacepileProps = {
+  public render(): JSX.Element {
+    const { numberOfFaces } = this.state;
+    const facepileProps: IFacepileProps = {
       personas: facepilePersonas.slice(0, numberOfFaces),
       maxDisplayablePersonas: 5,
       overflowButtonProps: {

@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { autobind } from '../../../Utilities';
 import { Modal } from 'office-ui-fabric-react/lib/Modal';
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import './Modal.Basic.Example.scss';
 
-export class ModalBasicExample extends React.Component<any, any> {
+export class ModalBasicExample extends React.Component<{}, {
+  showModal: boolean;
+}> {
 
-  constructor() {
-    super();
+  constructor(props: {}) {
+    super(props);
     this.state = {
       showModal: false
     };
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <div>
         <DefaultButton
@@ -42,13 +43,11 @@ export class ModalBasicExample extends React.Component<any, any> {
     );
   }
 
-  @autobind
-  private _showModal() {
+  private _showModal = (): void => {
     this.setState({ showModal: true });
   }
 
-  @autobind
-  private _closeModal() {
+  private _closeModal = (): void => {
     this.setState({ showModal: false });
   }
 }

@@ -2,13 +2,14 @@ import { Promise } from 'es6-promise';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as ReactTestUtils from 'react-dom/test-utils';
+import * as renderer from 'react-test-renderer';
 import { SpinButton } from './SpinButton';
 import { KeyCodes } from '../../Utilities';
 
 describe('SpinButton', () => {
   function renderIntoDocument(element: React.ReactElement<any>): HTMLElement {
     const component = ReactTestUtils.renderIntoDocument(element);
-    const renderedDOM: Element = ReactDOM.findDOMNode(component as React.ReactInstance);
+    const renderedDOM: Element = ReactDOM.findDOMNode(component as React.ReactInstance) as Element;
     return renderedDOM as HTMLElement;
   }
 
@@ -18,11 +19,17 @@ describe('SpinButton', () => {
     return event;
   }
 
+  it('renders SpinButton correctly', () => {
+    const component = renderer.create(<SpinButton label='label' />);
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
   it('should render a spinner with the default value on the input element', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -49,10 +56,10 @@ describe('SpinButton', () => {
   });
 
   it('should increment the value in the spin button via the up button', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -91,10 +98,10 @@ describe('SpinButton', () => {
   });
 
   it('should decrement the value in the spin button by the down button', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -133,10 +140,10 @@ describe('SpinButton', () => {
   });
 
   it('should increment the value in the spin button by the up arrow', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -168,10 +175,10 @@ describe('SpinButton', () => {
   });
 
   it('should decrement the value in the spin button by the down arrow', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -203,10 +210,10 @@ describe('SpinButton', () => {
   });
 
   it('should increment the value in the spin button by a step value of 2', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -239,10 +246,10 @@ describe('SpinButton', () => {
   });
 
   it('should decrement the value in the spin button by a step value of 2', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -275,11 +282,11 @@ describe('SpinButton', () => {
   });
 
   it('should set the value of the spin button by manual entry', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
-    const exampleNewValue: string = '21';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
+    const exampleNewValue = '21';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -302,11 +309,11 @@ describe('SpinButton', () => {
   });
 
   it('should reset the value of the spin button with invalid manual entry', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
-    const exampleNewValue: string = 'garbage';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
+    const exampleNewValue = 'garbage';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -329,11 +336,11 @@ describe('SpinButton', () => {
   });
 
   it('should revert to max value when input value is higher than the max of the spin button', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
-    const exampleNewValue: string = '23';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
+    const exampleNewValue = '23';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -356,11 +363,11 @@ describe('SpinButton', () => {
   });
 
   it('should revert existing value when input value is lower than the min of the spin button', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
-    const exampleNewValue: string = '0';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
+    const exampleNewValue = '0';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -383,12 +390,12 @@ describe('SpinButton', () => {
   });
 
   it('should use validator passed to the spin button (with valid input)', () => {
-    const errorMessage: string = 'The value is invalid';
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
-    const exampleNewValue: string = '21';
+    const errorMessage = 'The value is invalid';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
+    const exampleNewValue = '21';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -396,8 +403,9 @@ describe('SpinButton', () => {
         min={ exampleMinValue }
         max={ exampleMaxValue }
         defaultValue={ exampleDefaultValue }
+        // tslint:disable-next-line:jsx-no-lambda
         onValidate={ (newValue: string): string => {
-          let numberValue: number = +newValue;
+          const numberValue: number = +newValue;
           return (!isNaN(numberValue) && numberValue >= exampleMinValue && numberValue <= exampleMaxValue) ? newValue : errorMessage;
         } }
       />
@@ -415,12 +423,12 @@ describe('SpinButton', () => {
   });
 
   it('should use validator passed to the spin button', () => {
-    const errorMessage: string = 'The value is invalid';
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
-    const exampleNewValue: string = '100';
+    const errorMessage = 'The value is invalid';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
+    const exampleNewValue = '100';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -428,8 +436,9 @@ describe('SpinButton', () => {
         min={ exampleMinValue }
         max={ exampleMaxValue }
         value={ exampleDefaultValue }
+        // tslint:disable-next-line:jsx-no-lambda
         onValidate={ (newValue: string): string => {
-          let numberValue: number = Number(newValue);
+          const numberValue: number = Number(newValue);
           return (!isNaN(numberValue) && numberValue >= exampleMinValue && numberValue <= exampleMaxValue) ? newValue : errorMessage;
         } }
       />
@@ -443,15 +452,16 @@ describe('SpinButton', () => {
     expect(inputDOM.value).toEqual(String(errorMessage));
     expect(inputDOM.getAttribute('aria-valuemin')).toEqual(String(exampleMinValue));
     expect(inputDOM.getAttribute('aria-valuemax')).toEqual(String(exampleMaxValue));
-    expect(inputDOM.getAttribute('aria-valuenow')).toEqual(String(errorMessage));
+    expect(inputDOM.getAttribute('aria-valuenow')).toBeFalsy();
+    expect(inputDOM.getAttribute('aria-valuetext')).toEqual(errorMessage);
   });
 
   it('should have correct value after increment and using defaultValue', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
-    const exampleStepValue: number = 2;
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
+    const exampleStepValue = 2;
     const exampleNewValue: string = String(Number(exampleDefaultValue) + exampleStepValue);
 
     const renderedDOM: HTMLElement = renderIntoDocument(
@@ -477,11 +487,11 @@ describe('SpinButton', () => {
   });
 
   it('should have correct value after decrement and using defaultValue', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
-    const exampleStepValue: number = 2;
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
+    const exampleStepValue = 2;
     const exampleNewValue: string = String(Number(exampleDefaultValue) - exampleStepValue);
 
     const renderedDOM: HTMLElement = renderIntoDocument(
@@ -507,10 +517,10 @@ describe('SpinButton', () => {
   });
 
   it('should use min as defaultvalue if neither value nor defaultValue are passed', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleStepValue: number = 2;
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleStepValue = 2;
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -531,7 +541,7 @@ describe('SpinButton', () => {
   });
 
   it('should use 0 as defaultvalue if neither value, defaultValue nor min are passed', () => {
-    const exampleLabelValue: string = 'SpinButton';
+    const exampleLabelValue = 'SpinButton';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -547,7 +557,7 @@ describe('SpinButton', () => {
   });
 
   it('should use the default onIncrement function when no value, defaultValue nor onIncrement function is passed', () => {
-    const exampleLabelValue: string = 'SpinButton';
+    const exampleLabelValue = 'SpinButton';
 
     const renderedDOM: HTMLElement = renderIntoDocument(
       <SpinButton
@@ -566,10 +576,10 @@ describe('SpinButton', () => {
   });
 
   it('should stop spinning if text field is focused while actively spinning', () => {
-    const exampleLabelValue: string = 'SpinButton';
-    const exampleMinValue: number = 2;
-    const exampleMaxValue: number = 22;
-    const exampleDefaultValue: string = '12';
+    const exampleLabelValue = 'SpinButton';
+    const exampleMinValue = 2;
+    const exampleMaxValue = 22;
+    const exampleDefaultValue = '12';
 
     function delay(millisecond: number): Promise<string> {
       return new Promise<string>((resolve) => setTimeout(resolve, millisecond));
@@ -599,13 +609,38 @@ describe('SpinButton', () => {
 
     delay(500).then(() => ReactTestUtils.Simulate.focus(inputDOM));
 
-    let currentValue = inputDOM.value;
+    const currentValue = inputDOM.value;
     expect(currentValue).not.toEqual('2');
     expect(inputDOM.getAttribute('aria-valuemin')).toEqual(String(exampleMinValue));
     expect(inputDOM.getAttribute('aria-valuemax')).toEqual(String(exampleMaxValue));
     expect(inputDOM.getAttribute('aria-valuenow')).toEqual(currentValue);
 
-    let newCurrentValue = inputDOM.value;
+    const newCurrentValue = inputDOM.value;
     expect(currentValue).toEqual(newCurrentValue);
+  });
+
+  it('should fire custom handlers even when value prop is 0', () => {
+    const val: string = 0 as any;
+    const onIncrement: jest.Mock = jest.fn();
+
+    const renderedDOM: HTMLElement = renderIntoDocument(
+      <SpinButton
+        label='label'
+        value={ val }
+        onIncrement={ onIncrement }
+      />
+    );
+
+    const buttonDOM: Element = renderedDOM.getElementsByClassName('ms-UpButton')[0];
+
+    ReactTestUtils.Simulate.mouseDown(buttonDOM,
+      {
+        type: 'mousedown',
+        clientX: 0,
+        clientY: 0
+      }
+    );
+
+    expect(onIncrement).toBeCalled();
   });
 });

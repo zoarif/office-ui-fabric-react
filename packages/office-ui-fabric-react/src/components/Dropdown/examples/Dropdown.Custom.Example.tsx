@@ -1,20 +1,21 @@
 import * as React from 'react';
 import { Dropdown } from 'office-ui-fabric-react/lib/Dropdown';
 import './Dropdown.Basic.Example.scss';
-import { DropdownMenuItemType, IDropdownOption, IDropdownProps } from './../Dropdown.Props';
+import { DropdownMenuItemType, IDropdownOption, IDropdownProps } from './../Dropdown.types';
 import { Icon } from '../../Icon';
 
-export class DropdownCustomExample extends React.Component<any, any> {
-  constructor() {
-    super();
+export class DropdownCustomExample extends React.Component {
+
+  constructor(props: {}) {
+    super(props);
     this.state = {
       selectedItem: null
     };
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
-      <div className='dropdownExample'>
+      <div className='docs-DropdownExample'>
 
         <Dropdown
           placeHolder='Select an Option'
@@ -22,7 +23,7 @@ export class DropdownCustomExample extends React.Component<any, any> {
           id='Customdrop1'
           ariaLabel='Custom dropdown example'
           onRenderPlaceHolder={ this._onRenderPlaceHolder }
-          onRenderTitle={ this._onRenderOption }
+          onRenderTitle={ this._onRenderTitle }
           onRenderOption={ this._onRenderOption }
           onRenderCaretDown={ this._onRenderCaretDown }
           options={
@@ -50,6 +51,24 @@ export class DropdownCustomExample extends React.Component<any, any> {
   }
 
   private _onRenderOption = (option: IDropdownOption): JSX.Element => {
+    return (
+      <div className='dropdownExample-option'>
+        { option.data && option.data.icon &&
+          <Icon
+            style={ { marginRight: '8px' } }
+            iconName={ option.data.icon }
+            aria-hidden='true'
+            title={ option.data.icon }
+          />
+        }
+        <span>{ option.text }</span>
+      </div>
+    );
+  }
+
+  private _onRenderTitle = (options: IDropdownOption[]): JSX.Element => {
+    const option = options[0];
+
     return (
       <div className='dropdownExample-option'>
         { option.data && option.data.icon &&

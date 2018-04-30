@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Link } from 'office-ui-fabric-react/lib/Link';
 import { LayerHost } from 'office-ui-fabric-react/lib/Layer';
 import {
   ExampleCard,
   ComponentPage,
+  IComponentDemoPageProps,
+  PageMarkdown,
   PropertiesTableSet
 } from '@uifabric/example-app-base';
 import { HoverCardBasicExample } from './examples/HoverCard.Basic.Example';
@@ -16,12 +17,13 @@ import './HoverCardPage.scss';
 const HoverCardBasicExampleCode = require('!raw-loader!office-ui-fabric-react/src/components/HoverCard/examples/HoverCard.Basic.Example.tsx') as string;
 const HoverCardTargetExampleCode = require('!raw-loader!office-ui-fabric-react/src/components/HoverCard/examples/HoverCard.Target.Example.tsx') as string;
 
-export class HoverCardPage extends React.Component<any, any> {
-  public render() {
+export class HoverCardPage extends React.Component<IComponentDemoPageProps, any> {
+  public render(): JSX.Element {
     return (
       <ComponentPage
         title='HoverCard'
         componentName='HoverCardExample'
+        componentUrl='https://github.com/OfficeDev/office-ui-fabric-react/tree/master/packages/office-ui-fabric-react/src/components/HoverCard'
         exampleCards={
           <LayerHost>
             <ExampleCard title='HoverCard' code={ HoverCardBasicExampleCode }>
@@ -32,25 +34,26 @@ export class HoverCardPage extends React.Component<any, any> {
             </ExampleCard>
           </LayerHost>
         }
+        allowNativeProps={ true }
         propertiesTables={
           <PropertiesTableSet
             sources={ [
-              require<string>('!raw-loader!office-ui-fabric-react/src/components/HoverCard/HoverCard.Props.ts'),
-              require<string>('!raw-loader!office-ui-fabric-react/src/components/HoverCard/ExpandingCard.Props.ts')
+              require<string>('!raw-loader!office-ui-fabric-react/src/components/HoverCard/HoverCard.types.ts'),
+              require<string>('!raw-loader!office-ui-fabric-react/src/components/HoverCard/ExpandingCard.types.ts')
             ] }
           />
         }
         overview={
-          <div>
-            <Link target='_blank' href='http://dev.office.com/fabric/components/HoverCard'>HoverCards</Link>
-            <span> supplement content associated with a specific data element.</span>
-          </div>
+          <PageMarkdown>
+            { require<string>('!raw-loader!office-ui-fabric-react/src/components/HoverCard/docs/HoverCardOverview.md') }
+          </PageMarkdown>
         }
         componentStatus={
           <ComponentStatus
-            {...HoverCardStatus}
+            { ...HoverCardStatus }
           />
         }
+        isHeaderVisible={ this.props.isHeaderVisible }
       />
     );
   }

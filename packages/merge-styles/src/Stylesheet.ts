@@ -13,7 +13,12 @@ export const enum InjectionMode {
   /**
    * Inserts rules using the insertRule api.
    */
-  insertNode = 1
+  insertNode = 1,
+
+  /**
+   * Appends rules using appendChild.
+   */
+  appendChild = 2
 }
 
 /**
@@ -26,6 +31,11 @@ export interface IStyleSheetConfig {
    * Injection mode for how rules are inserted.
    */
   injectionMode?: InjectionMode;
+  /**
+   * Falls back to "css".
+   */
+  defaultPrefix?: string;
+  onInsertRule?: (rule: string) => void;
 }
 
 const STYLESHEET_SETTING = '__stylesheet__';
@@ -40,16 +50,16 @@ let _stylesheet: Stylesheet;
  * @public
  */
 export class Stylesheet {
-  private _styleElement: HTMLStyleElement;
-  private _rules: string[];
+  private _lastStyleElement?: HTMLStyleElement;
+  private _styleElement?: HTMLStyleElement;
+  private _rules: string[] = [];
   private _config: IStyleSheetConfig;
-  private _rulesToInsert: string[];
-  private _timerId: number;
-  private _counter: number;
-  private _keyToClassName: { [key: string]: string };
+  private _rulesToInsert: string[] = [];
+  private _counter = 0;
+  private _keyToClassName: { [key: string]: string } = {};
 
   // tslint:disable-next-line:no-any
-  private _classNameToArgs: { [key: string]: { args: any, rules: string[] } };
+  private _classNameToArgs: { [key: string]: { args: any, rules: string[] } } = {};
 
   /**
    * Gets the singleton instance.
@@ -60,7 +70,10 @@ export class Stylesheet {
     _stylesheet = win[STYLESHEET_SETTING] as Stylesheet;
 
     if (!_stylesheet) {
-      _stylesheet = win[STYLESHEET_SETTING] = new Stylesheet();
+      // tslint:disable-next-line:no-string-literal
+      const fabricConfig = (win && win['FabricConfig']) || {};
+
+      _stylesheet = win[STYLESHEET_SETTING] = new Stylesheet(fabricConfig.mergeStyles);
     }
 
     return _stylesheet;
@@ -68,12 +81,10 @@ export class Stylesheet {
 
   constructor(config?: IStyleSheetConfig) {
     this._config = {
-      async: false,
       injectionMode: InjectionMode.insertNode,
+      defaultPrefix: 'css',
       ...config
     };
-
-    this.reset();
   }
 
   /**
@@ -92,7 +103,7 @@ export class Stylesheet {
    * @param displayName - Optional value to use as a prefix.
    */
   public getClassName(displayName?: string): string {
-    const prefix = displayName || 'css';
+    const prefix = displayName || this._config.defaultPrefix;
 
     return `${prefix}-${this._counter++}`;
   }
@@ -148,24 +159,33 @@ export class Stylesheet {
   public insertRule(
     rule: string
   ): void {
-    const element = this._getElement();
-    const injectionMode = element ? this._config.injectionMode : InjectionMode.none;
+    const { injectionMode } = this._config;
+    const element = injectionMode !== InjectionMode.none ? this._getStyleElement() : undefined;
 
-    switch (injectionMode) {
-      case InjectionMode.insertNode:
-        const { sheet } = element!;
+    if (element) {
+      switch (this._config.injectionMode) {
+        case InjectionMode.insertNode:
+          const { sheet } = element!;
 
-        try {
-          // tslint:disable-next-line:no-any
-          (sheet as any).insertRule(rule, (sheet as any).cssRules.length);
-        } catch (e) {
-          /* no-op on errors */
-        }
-        break;
+          try {
+            (sheet as CSSStyleSheet).insertRule(rule, (sheet as CSSStyleSheet).cssRules.length);
+          } catch (e) {
+            // The browser will throw exceptions on unsupported rules (such as a moz prefix in webkit.)
+            // We need to swallow the exceptions for this scenario, otherwise we'd need to filter
+            // which could be slower and bulkier.
+          }
+          break;
 
-      default:
-        this._rules.push(rule);
-        break;
+        case InjectionMode.appendChild:
+          element.appendChild(document.createTextNode(rule));
+          break;
+      }
+    } else {
+      this._rules.push(rule);
+    }
+
+    if (this._config.onInsertRule) {
+      this._config.onInsertRule(rule);
     }
   }
 
@@ -187,19 +207,39 @@ export class Stylesheet {
     this._counter = 0;
     this._classNameToArgs = {};
     this._keyToClassName = {};
-
-    if (this._timerId) {
-      clearTimeout(this._timerId);
-      this._timerId = 0;
-    }
   }
 
-  private _getElement(): HTMLStyleElement | undefined {
-    if (!this._styleElement && typeof document !== 'undefined') {
-      this._styleElement = document.createElement('style');
-      document.head.appendChild(this._styleElement);
-    }
+  // Forces the regeneration of incoming styles without totally resetting the stylesheet.
+  public resetKeys(): void {
+    this._keyToClassName = {};
+  }
 
+  private _getStyleElement(): HTMLStyleElement | undefined {
+    if (!this._styleElement && typeof document !== 'undefined') {
+      this._styleElement = this._createStyleElement();
+
+      // Reset the style element on the next frame.
+      window.requestAnimationFrame(() => {
+        this._styleElement = undefined;
+      });
+    }
     return this._styleElement;
   }
+
+  private _createStyleElement(): HTMLStyleElement {
+    const styleElement = document.createElement('style');
+
+    styleElement.setAttribute('data-merge-styles', 'true');
+    styleElement.type = 'text/css';
+
+    if (this._lastStyleElement && this._lastStyleElement.nextElementSibling) {
+      document.head.insertBefore(styleElement, this._lastStyleElement.nextElementSibling);
+    } else {
+      document.head.appendChild(styleElement);
+    }
+    this._lastStyleElement = styleElement;
+
+    return styleElement;
+  }
+
 }

@@ -5,15 +5,16 @@ import {
   unhoistMethods
 } from '../../Utilities';
 
-export class BaseDecorator<P, S> extends BaseComponent<P, S> {
+export class BaseDecorator<TProps, TState> extends BaseComponent<TProps, TState> {
+  // tslint:disable-next-line:typedef
   protected _shouldUpdateComponentRef = false;
 
-  protected _composedComponentInstance: React.Component<P, S>;
+  protected _composedComponentInstance: React.Component<TProps, TState>;
 
   private _hoisted: string[];
 
-  constructor() {
-    super();
+  constructor(props: TProps) {
+    super(props);
     this._updateComposedComponentRef = this._updateComposedComponentRef.bind(this);
   }
 
@@ -23,7 +24,7 @@ export class BaseDecorator<P, S> extends BaseComponent<P, S> {
    *
    * Pass this method as the argument to the 'ref' property of the composed component.
    */
-  protected _updateComposedComponentRef(composedComponentInstance: React.Component<P, S>) {
+  protected _updateComposedComponentRef(composedComponentInstance: React.Component<TProps, TState>): void {
     this._composedComponentInstance = composedComponentInstance;
     if (composedComponentInstance) {
       this._hoisted = hoistMethods(this, composedComponentInstance);

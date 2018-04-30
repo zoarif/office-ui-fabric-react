@@ -4,7 +4,6 @@ import { Callout, DirectionalHint } from 'office-ui-fabric-react/lib/Callout';
 import { Dropdown, IDropdownOption } from 'office-ui-fabric-react/lib/Dropdown';
 import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { Slider } from 'office-ui-fabric-react/lib/Slider';
-import { autobind } from 'office-ui-fabric-react/lib/Utilities';
 import './CalloutExample.scss';
 
 import * as exampleStylesImport from '../../../common/_exampleStyles.scss';
@@ -35,10 +34,11 @@ const DIRECTION_OPTIONS = [
   { key: DirectionalHint.rightBottomEdge, text: 'Right Bottom Edge' },
 ];
 
-export class CalloutDirectionalExample extends React.Component<any, ICalloutDirectionalExampleState> {
-  private _menuButtonElement: HTMLElement;
-  public constructor() {
-    super();
+export class CalloutDirectionalExample extends React.Component<{}, ICalloutDirectionalExampleState> {
+  private _menuButtonElement: HTMLElement | null;
+
+  public constructor(props: {}) {
+    super(props);
 
     this.state = {
       isCalloutVisible: false,
@@ -47,8 +47,8 @@ export class CalloutDirectionalExample extends React.Component<any, ICalloutDire
     };
   }
 
-  public render() {
-    let { isCalloutVisible, isBeakVisible, directionalHint, gapSpace, beakWidth } = this.state;
+  public render(): JSX.Element {
+    const { isCalloutVisible, isBeakVisible, directionalHint, gapSpace, beakWidth } = this.state;
     //  ms-Callout-smallbeak is used in this directional example to reflect all the positions. Large beak will disable some position to avoid beak over the callout edge.
     return (
       <div className='ms-CalloutExample'>
@@ -81,7 +81,7 @@ export class CalloutDirectionalExample extends React.Component<any, ICalloutDire
             onChanged={ this._onDirectionalChanged }
           />
         </div>
-        <div className='ms-CalloutExample-buttonArea' ref={ (menuButton) => this._menuButtonElement = menuButton! }>
+        <div className='ms-CalloutExample-buttonArea' ref={ (menuButton) => this._menuButtonElement = menuButton }>
           <DefaultButton
             className={ 'calloutExampleButton' }
             onClick={ this._onShowMenuClicked }
@@ -116,44 +116,38 @@ export class CalloutDirectionalExample extends React.Component<any, ICalloutDire
     );
   }
 
-  @autobind
-  private _onCalloutDismiss() {
+  private _onCalloutDismiss = (): void => {
     this.setState({
       isCalloutVisible: false
     });
   }
 
-  @autobind
-  private _onShowMenuClicked() {
+  private _onShowMenuClicked = (): void => {
     this.setState({
       isCalloutVisible: !this.state.isCalloutVisible
     });
   }
 
-  @autobind
-  private _onShowBeakChange(ev: React.FormEvent<HTMLElement>, isVisible: boolean) {
+  private _onShowBeakChange = (ev: React.FormEvent<HTMLElement>, isVisible: boolean): void => {
     this.setState({
       isBeakVisible: isVisible,
       beakWidth: 10
     });
   }
 
-  @autobind
-  private _onDirectionalChanged(option: IDropdownOption) {
+  private _onDirectionalChanged = (option: IDropdownOption): void => {
     this.setState({
       directionalHint: option.key as number
     });
   }
 
-  @autobind
-  private _onGapSlider(value: number) {
+  private _onGapSlider = (value: number): void => {
     this.setState({
       gapSpace: value
     });
   }
 
-  @autobind
-  private _onBeakWidthSlider(value: number) {
+  private _onBeakWidthSlider = (value: number): void => {
     this.setState({
       beakWidth: value
     });

@@ -1,7 +1,4 @@
-/* tslint:disable:no-unused-variable */
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-/* tslint:enable:no-unused-variable */
 import { BaseComponent } from 'office-ui-fabric-react/lib/Utilities';
 import {
   HoverCard,
@@ -9,7 +6,6 @@ import {
 } from 'office-ui-fabric-react/lib/HoverCard';
 import { DetailsList, buildColumns, IColumn } from 'office-ui-fabric-react/lib/DetailsList';
 import { DirectionalHint } from 'office-ui-fabric-react/lib/common/DirectionalHint';
-import { autobind } from 'office-ui-fabric-react/lib/Utilities';
 import { createListItems } from '@uifabric/example-app-base';
 import './HoverCard.Example.scss';
 
@@ -41,7 +37,7 @@ class HoverCardField extends BaseComponent<IHoverCardFieldProps, IHoverCardField
 
   public render() {
     return (
-      <div ref={ (c: HTMLDivElement) => !this.state.contentRendered && this.setState({ contentRendered: c }) } >
+      <div ref={ (c: HTMLDivElement) => !this.state.contentRendered && this.setState({ contentRendered: c }) } data-is-focusable={ true }>
         { this.props.content }
         {
           this.state.contentRendered &&
@@ -51,6 +47,7 @@ class HoverCardField extends BaseComponent<IHoverCardFieldProps, IHoverCardField
             cardDismissDelay={ 300 }
             onCardVisible={ this._log('onCardVisible') }
             onCardHide={ this._log('onCardHide') }
+            trapFocus={ true }
           />
         }
       </div>
@@ -78,7 +75,7 @@ export class HoverCardTargetExample extends BaseComponent<{}, IHoverCardExampleS
   }
 
   public render() {
-    let { items, columns } = this.state;
+    const { items, columns } = this.state;
 
     return (
       <div>
@@ -88,13 +85,13 @@ export class HoverCardTargetExample extends BaseComponent<{}, IHoverCardExampleS
           items={ items! }
           columns={ columns }
           onRenderItemColumn={ this._onRenderItemColumn }
+          ariaLabel={ 'Hover card DetailsList test' }
         />
       </div>
     );
   }
 
-  @autobind
-  private _onRenderItemColumn(item: any, index: number, column: IColumn) {
+  private _onRenderItemColumn = (item: any, index: number, column: IColumn): JSX.Element => {
     const expandingCardProps: IExpandingCardProps = {
       onRenderCompactCard: this._onRenderCompactCard,
       onRenderExpandedCard: this._onRenderExpandedCard,
@@ -117,8 +114,7 @@ export class HoverCardTargetExample extends BaseComponent<{}, IHoverCardExampleS
     return item[column.key];
   }
 
-  @autobind
-  private _onRenderCompactCard(item: any): JSX.Element {
+  private _onRenderCompactCard = (item: any): JSX.Element => {
     return (
       <div className='hoverCardExample-compactCard'>
         <a target='_blank' href={ `http://wikipedia.org/wiki/${item.location}` }>
@@ -128,9 +124,8 @@ export class HoverCardTargetExample extends BaseComponent<{}, IHoverCardExampleS
     );
   }
 
-  @autobind
-  private _onRenderExpandedCard(item: any): JSX.Element {
-    let { items, columns } = this.state;
+  private _onRenderExpandedCard = (item: any): JSX.Element => {
+    const { items, columns } = this.state;
     return (
       <div className='hoverCardExample-expandedCard'>
         { item.description }

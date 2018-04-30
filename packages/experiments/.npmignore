@@ -12,6 +12,7 @@ images
 results
 *.build.log
 dist/*.stats.html
+dist/*.stats.json
 dist/demo*.*
 gulpfile.js
 index.html
@@ -19,7 +20,7 @@ jsconfig.json
 karma.config.js
 node_modules
 src/**/*
-!src/**/*.Props.ts
+!src/**/*.types.ts
 !src/**/*.Example.tsx
 tsconfig.json
 tsd.json

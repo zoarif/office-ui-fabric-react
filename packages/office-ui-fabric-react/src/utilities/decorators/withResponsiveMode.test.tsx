@@ -5,7 +5,7 @@ import { setSSR } from '../../Utilities';
 
 @withResponsiveMode
 class Example extends React.Component<any, any> {
-  public render() {
+  public render(): JSX.Element {
     return <div />;
   }
 }
@@ -17,15 +17,6 @@ describe('withResponsiveMode', () => {
 
     setResponsiveMode(ResponsiveMode.large);
     expect(() => ReactTestUtils.renderIntoDocument(<Example />)).toBeDefined();
-
-    setSSR(false);
-  });
-
-  it('throws in server scenario when responsive mode is not specified', () => {
-    setSSR(true);
-
-    setResponsiveMode(undefined);
-    expect(() => ReactTestUtils.renderIntoDocument(<Example />)).toThrow();
 
     setSSR(false);
   });

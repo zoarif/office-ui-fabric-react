@@ -2,19 +2,48 @@
 
 exports[`CommandBar renders commands correctly 1`] = `
 <div
-  className="ms-ResizeGroup"
+  className=
+      ms-ResizeGroup
+      TestClassName
+      {
+        display: block;
+        position: relative;
+      }
 >
   <div
-    className=""
+    style={
+      Object {
+        "position": "fixed",
+        "visibility": "hidden",
+      }
+    }
   >
     <div
-      className="ms-CommandBar"
+      className=
+          ms-CommandBar
+          TestClassName
+          {
+            background-color: #f4f4f4;
+            display: flex;
+            height: 40px;
+            padding-bottom: 0;
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-top: 0;
+          }
     >
       <div
         aria-describedby={undefined}
         aria-labelledby={undefined}
-        className="ms-FocusZone ms-OverflowSet"
-        data-focuszone-id="FocusZone1"
+        className=
+            ms-FocusZone
+            ms-OverflowSet
+            {
+              align-items: stretch;
+              display: flex;
+              flex-grow: 1;
+            }
+        data-focuszone-id="FocusZone0"
         onFocus={[Function]}
         onKeyDown={[Function]}
         onMouseDownCapture={[Function]}
@@ -41,10 +70,10 @@ exports[`CommandBar renders commands correctly 1`] = `
                   color: #333333;
                   cursor: pointer;
                   display: inline-block;
-                  font-family: 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
+                  font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
                   font-size: 14px;
                   font-weight: 400;
-                  height: 40px;
+                  height: 100%;
                   min-width: 40px;
                   outline: transparent;
                   padding-bottom: 0;
@@ -60,7 +89,7 @@ exports[`CommandBar renders commands correctly 1`] = `
                 &::-moz-focus-inner {
                   border: 0;
                 }
-                .ms-Fabric.is-focusVisible &:focus:after {
+                .ms-Fabric--isFocusVisible &:focus:after {
                   border: 1px solid #ffffff;
                   bottom: 0px;
                   content: "";
@@ -70,6 +99,17 @@ exports[`CommandBar renders commands correctly 1`] = `
                   right: 0px;
                   top: 0px;
                   z-index: 1;
+                }
+                @media screen and (-ms-high-contrast: active){.ms-Fabric--isFocusVisible &:focus:after {
+                  border: none;
+                  bottom: 4px;
+                  left: 4px;
+                  outline-color: ButtonText;
+                  right: 4px;
+                  top: 4px;
+                }
+                @media screen and (-ms-high-contrast: active){& {
+                  border: none;
                 }
                 &:hover {
                   background-color: #eaeaea;
@@ -113,7 +153,7 @@ exports[`CommandBar renders commands correctly 1`] = `
                         margin-right: 4px;
                         margin-top: 0;
                       }
-                  id="2"
+                  id="id__1"
                 >
                   asdf
                 </div>
@@ -142,10 +182,10 @@ exports[`CommandBar renders commands correctly 1`] = `
                   color: #333333;
                   cursor: pointer;
                   display: inline-block;
-                  font-family: 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
+                  font-family: 'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
                   font-size: 14px;
                   font-weight: 400;
-                  height: 40px;
+                  height: 100%;
                   min-width: 40px;
                   outline: transparent;
                   padding-bottom: 0;
@@ -161,7 +201,7 @@ exports[`CommandBar renders commands correctly 1`] = `
                 &::-moz-focus-inner {
                   border: 0;
                 }
-                .ms-Fabric.is-focusVisible &:focus:after {
+                .ms-Fabric--isFocusVisible &:focus:after {
                   border: 1px solid #ffffff;
                   bottom: 0px;
                   content: "";
@@ -171,6 +211,17 @@ exports[`CommandBar renders commands correctly 1`] = `
                   right: 0px;
                   top: 0px;
                   z-index: 1;
+                }
+                @media screen and (-ms-high-contrast: active){.ms-Fabric--isFocusVisible &:focus:after {
+                  border: none;
+                  bottom: 4px;
+                  left: 4px;
+                  outline-color: ButtonText;
+                  right: 4px;
+                  top: 4px;
+                }
+                @media screen and (-ms-high-contrast: active){& {
+                  border: none;
                 }
                 &:hover {
                   background-color: #eaeaea;
@@ -214,7 +265,7 @@ exports[`CommandBar renders commands correctly 1`] = `
                         margin-right: 4px;
                         margin-top: 0;
                       }
-                  id="5"
+                  id="id__4"
                 >
                   asdf
                 </div>
@@ -226,8 +277,15 @@ exports[`CommandBar renders commands correctly 1`] = `
       <div
         aria-describedby={undefined}
         aria-labelledby={undefined}
-        className="ms-FocusZone ms-OverflowSet"
-        data-focuszone-id="FocusZone8"
+        className=
+            ms-FocusZone
+            ms-OverflowSet
+            {
+              align-items: stretch;
+              display: flex;
+              flex-shrink: 0;
+            }
+        data-focuszone-id="FocusZone7"
         onFocus={[Function]}
         onKeyDown={[Function]}
         onMouseDownCapture={[Function]}

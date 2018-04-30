@@ -1,18 +1,14 @@
-/* tslint:disable:no-unused-variable */
 import * as React from 'react';
-/* tslint:enable:no-unused-variable */
-
-import * as ReactDOM from 'react-dom';
 import * as ReactTestUtils from 'react-dom/test-utils';
-import { shallow, mount, ReactWrapper } from 'enzyme';
+import * as renderer from 'react-test-renderer';
+import { mount } from 'enzyme';
 
 import { Image } from './Image';
-import { ImageFit, ImageLoadState } from './Image.Props';
+import { ImageBase } from './Image.base';
+import { ImageFit } from './Image.types';
 
 /* tslint:disable:no-unused-variable */
 const testImage1x1 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQImWP4DwQACfsD/eNV8pwAAAAASUVORK5CYII=';
-const testImage1x2 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWP4////fyYGBgYGAB32A/+PRyXoAAAAAElFTkSuQmCC';
-const testImage2x1 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAAEUlEQVQImWP8////fwYGBgYAGfgD/hEzDhoAAAAASUVORK5CYII=';
 const brokenImage = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgFcSJAAAAC0lEQVQImWP4DwQACfsD/eNV8pwAAAAASUVORK5CYII=';
 
 describe('Image', () => {
@@ -22,21 +18,28 @@ describe('Image', () => {
     Object.defineProperty(HTMLImageElement.prototype, 'naturalWidth', { get: () => 1 });
   });
 
+  it('renders Image correctly', () => {
+    const component = renderer.create(<Image src={ testImage1x1 } />);
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
+
   it('renders an image', (done) => {
-    let component = ReactTestUtils.renderIntoDocument(
-      <Image
+    const component = ReactTestUtils.renderIntoDocument(
+      <ImageBase
         src={ testImage1x1 }
+        // tslint:disable-next-line:jsx-no-lambda
         onLoad={ () => done() }
       />
     );
 
-    let image = ReactTestUtils.findRenderedDOMComponentWithTag(component as any, 'img');
+    const image = ReactTestUtils.findRenderedDOMComponentWithTag(component as any, 'img');
     ReactTestUtils.Simulate.load(image);
 
   });
 
   it('can cover a portrait (tall) frame with a square image', () => {
-    let component = mount(
+    const component = mount(
       <div>
         <Image
           src={ testImage1x1 }
@@ -53,7 +56,7 @@ describe('Image', () => {
   });
 
   it('can cover a landscape (wide) frame with a square image', () => {
-    let component = mount(
+    const component = mount(
       <div>
         <Image
           src={ testImage1x1 }
@@ -70,7 +73,7 @@ describe('Image', () => {
   });
 
   it('can cover a landscape (wide) parent element with a square image', () => {
-    let component = mount(
+    const component = mount(
       <div style={ { width: '10px', height: '20px' } }>
         <Image
           className='is-frameMaximizedPortrait'
@@ -89,7 +92,7 @@ describe('Image', () => {
   });
 
   it('can cover a portrait (tall) parent element with a square image', () => {
-    let component = mount(
+    const component = mount(
       <div style={ { width: '10px', height: '20px' } }>
         <Image
           src={ testImage1x1 }
@@ -109,14 +112,15 @@ describe('Image', () => {
   });
 
   it('allows onError events to be attached', (done) => {
-    let component = ReactTestUtils.renderIntoDocument(
-      <Image
+    const component = ReactTestUtils.renderIntoDocument(
+      <ImageBase
         src={ brokenImage }
+        // tslint:disable-next-line:jsx-no-lambda
         onError={ () => done() }
       />
     );
 
-    let img = ReactTestUtils.findRenderedDOMComponentWithTag(component as any, 'img');
+    const img = ReactTestUtils.findRenderedDOMComponentWithTag(component as any, 'img');
     ReactTestUtils.Simulate.error(img);
   });
 });

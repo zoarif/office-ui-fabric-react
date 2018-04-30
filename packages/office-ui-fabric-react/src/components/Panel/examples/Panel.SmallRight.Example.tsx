@@ -1,19 +1,20 @@
 import * as React from 'react';
-import { autobind } from 'office-ui-fabric-react/lib/Utilities';
 import { PrimaryButton, DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { ChoiceGroup } from 'office-ui-fabric-react/lib/ChoiceGroup';
 import { Panel, PanelType } from 'office-ui-fabric-react/lib/Panel';
 
-export class PanelSmallRightExample extends React.Component<any, any> {
+export class PanelSmallRightExample extends React.Component<{}, {
+  showPanel: boolean;
+}> {
 
-  constructor() {
-    super();
+  constructor(props: {}) {
+    super(props);
     this.state = {
       showPanel: false
     };
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <div>
         <DefaultButton
@@ -60,13 +61,11 @@ export class PanelSmallRightExample extends React.Component<any, any> {
     );
   }
 
-  @autobind
-  private _onClosePanel(): void {
+  private _onClosePanel = (): void => {
     this.setState({ showPanel: false });
   }
 
-  @autobind
-  private _onRenderFooterContent(): JSX.Element {
+  private _onRenderFooterContent = (): JSX.Element => {
     return (
       <div>
         <PrimaryButton
@@ -84,8 +83,7 @@ export class PanelSmallRightExample extends React.Component<any, any> {
     );
   }
 
-  @autobind
-  private _onShowPanel(): void {
+  private _onShowPanel = (): void => {
     this.setState({ showPanel: true });
   }
 }

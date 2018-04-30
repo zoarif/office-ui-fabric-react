@@ -7,7 +7,7 @@ import {
 } from 'office-ui-fabric-react/lib/Pivot';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { List } from 'office-ui-fabric-react/lib/List';
-import { KeyCodes, autobind } from 'office-ui-fabric-react/lib/Utilities';
+import { KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
 import TodoItem from './TodoItem';
 import { ITodoItem, ITodoItemProps, ITodoTabsProps } from '../types/index';
 
@@ -23,8 +23,8 @@ import strings from './../strings';
  * Link of <FocusZone>: https://fabricreact.azurewebsites.net/fabric-react/master/#examples/focuszone
  */
 export default class TodoTabs extends React.Component<ITodoTabsProps, {}> {
-  public render(): React.ReactElement<IPivotProps> {
-    const pivotArray: IPivotProps[] = [];
+  public render(): React.ReactElement<IPivotProps> | null {
+    const pivotArray: React.ReactElement<IPivotProps>[] = [];
 
     const activeTasks: ITodoItem[] = this.props.items.filter((task: ITodoItem) => task.isComplete === false);
     const completedTasks: ITodoItem[] = this.props.items.filter((task: ITodoItem) => task.isComplete === true);
@@ -73,8 +73,7 @@ export default class TodoTabs extends React.Component<ITodoTabsProps, {}> {
     );
   }
 
-  @autobind
-  private _isInnerZoneKeystroke(ev): boolean {
+  private _isInnerZoneKeystroke = (ev: React.KeyboardEvent<HTMLElement>): boolean => {
     return ev.which === KeyCodes.right;
   }
 

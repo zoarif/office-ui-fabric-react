@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SpinButton } from 'office-ui-fabric-react/lib/SpinButton';
 
 export class SpinButtonBasicWithIconExample extends React.Component<any, any> {
-  public render() {
+  public render(): JSX.Element {
     return (
       <div style={ { width: '400px' } }>
         <SpinButton
@@ -12,6 +12,7 @@ export class SpinButtonBasicWithIconExample extends React.Component<any, any> {
           min={ 0 }
           max={ 100 }
           step={ 1 }
+          // tslint:disable:jsx-no-lambda
           onFocus={ () => console.log('onFocus called') }
           onBlur={ () => console.log('onBlur called') }
         />

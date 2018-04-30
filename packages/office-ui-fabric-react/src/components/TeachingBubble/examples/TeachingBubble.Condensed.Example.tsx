@@ -1,6 +1,4 @@
-/* tslint:disable:no-unused-variable */
 import * as React from 'react';
-/* tslint:enable:no-unused-variable */
 import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 import { TeachingBubble } from 'office-ui-fabric-react/lib/TeachingBubble';
 
@@ -8,11 +6,11 @@ export interface ITeachingBubbleCondensedExampleState {
   isTeachingBubbleVisible?: boolean;
 }
 
-export class TeachingBubbleCondensedExample extends React.Component<any, ITeachingBubbleCondensedExampleState> {
+export class TeachingBubbleCondensedExample extends React.Component<{}, ITeachingBubbleCondensedExampleState> {
   private _menuButtonElement: HTMLElement;
 
-  public constructor() {
-    super();
+  public constructor(props: {}) {
+    super(props);
 
     this._onDismiss = this._onDismiss.bind(this);
 
@@ -21,8 +19,8 @@ export class TeachingBubbleCondensedExample extends React.Component<any, ITeachi
     };
   }
 
-  public render() {
-    let { isTeachingBubbleVisible } = this.state;
+  public render(): JSX.Element {
+    const { isTeachingBubbleVisible } = this.state;
 
     return (
       <div className='ms-TeachingBubbleExample'>
@@ -49,7 +47,7 @@ export class TeachingBubbleCondensedExample extends React.Component<any, ITeachi
     );
   }
 
-  private _onDismiss(ev: any) {
+  private _onDismiss(ev: any): void {
     this.setState({
       isTeachingBubbleVisible: !this.state.isTeachingBubbleVisible
     });

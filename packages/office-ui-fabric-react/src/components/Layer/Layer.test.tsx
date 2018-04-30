@@ -3,11 +3,17 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import * as PropTypes from 'prop-types';
 /* tslint:enable:no-unused-variable */
+import * as renderer from 'react-test-renderer';
 
 import { Layer } from './Layer';
 import { LayerHost } from './LayerHost';
 
 describe('Layer', () => {
+  it('renders Layer correctly', () => {
+    const component = renderer.create(<Layer>Content</Layer>);
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 
   it('can render in a targeted LayerHost and pass context through', () => {
 
@@ -18,7 +24,7 @@ describe('Layer', () => {
 
       public context: any;
 
-      public render() {
+      public render(): JSX.Element {
         return (
           <div id='child'>{ this.context.foo }</div>
         );
@@ -36,7 +42,7 @@ describe('Layer', () => {
         };
       }
 
-      public render() {
+      public render(): JSX.Element {
         return (
           <div id='parent'>
             <Layer hostId='foo'>
@@ -49,7 +55,7 @@ describe('Layer', () => {
 
     class App extends React.Component<{}, {}> {
 
-      public render() {
+      public render(): JSX.Element {
         return (
           <div id='app'>
             <Parent />
@@ -59,18 +65,18 @@ describe('Layer', () => {
       }
     }
 
-    let appElement = document.createElement('div');
+    const appElement = document.createElement('div');
 
     try {
       document.body.appendChild(appElement);
       ReactDOM.render(<App />, appElement);
 
-      let parentElement = appElement.querySelector('#parent');
+      const parentElement = appElement.querySelector('#parent');
 
       expect(parentElement).toBeDefined();
       expect(parentElement!.ownerDocument).toBeDefined();
 
-      let childElement = appElement.querySelector('#child') as Element;
+      const childElement = appElement.querySelector('#child') as Element;
 
       expect(childElement.textContent).toEqual('foo');
     } finally {

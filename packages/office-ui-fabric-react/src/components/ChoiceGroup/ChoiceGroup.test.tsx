@@ -4,18 +4,30 @@ import * as ReactDOM from 'react-dom';
 /* tslint:enable:no-unused-variable */
 
 import * as ReactTestUtils from 'react-dom/test-utils';
+import * as renderer from 'react-test-renderer';
 
 import { ChoiceGroup } from './ChoiceGroup';
-import { IChoiceGroupOption } from './ChoiceGroup.Props';
+import { IChoiceGroupOption } from './ChoiceGroup.types';
 
 const TEST_OPTIONS: IChoiceGroupOption[] = [
   { key: '1', text: '1', 'data-automation-id': 'auto1' } as IChoiceGroupOption,
   { key: '2', text: '2' },
   { key: '3', text: '3' }
 ];
-const QUERY_SELECTOR: string = '.ms-ChoiceField-input';
+const QUERY_SELECTOR = '.ms-ChoiceField-input';
 
 describe('ChoiceGroup', () => {
+
+  it('renders ChoiceGroup correctly', () => {
+    const component = renderer.create(
+      <ChoiceGroup
+        options={ TEST_OPTIONS }
+        required
+      />
+    );
+    const tree = component.toJSON();
+    expect(tree).toMatchSnapshot();
+  });
 
   it('can change options', () => {
     const options: IChoiceGroupOption[] = [
@@ -23,7 +35,6 @@ describe('ChoiceGroup', () => {
       { key: '2', text: '2' },
       { key: '3', text: '3' }
     ];
-    let exception;
     let threwException = false;
     let choiceGroup;
     try {
@@ -35,13 +46,12 @@ describe('ChoiceGroup', () => {
         />
       );
     } catch (e) {
-      exception = e;
       threwException = true;
     }
     expect(threwException).toEqual(false);
 
-    let renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance);
-    let choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
+    const renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance) as Element;
+    const choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
 
     expect((choiceOptions[0] as HTMLInputElement).checked).toEqual(false);
     expect((choiceOptions[1] as HTMLInputElement).checked).toEqual(false);
@@ -72,7 +82,6 @@ describe('ChoiceGroup', () => {
       { key: '2', text: '2' },
       { key: '3', text: '3' }
     ];
-    let exception;
     let threwException = false;
     let choiceGroup;
     try {
@@ -84,13 +93,12 @@ describe('ChoiceGroup', () => {
         />
       );
     } catch (e) {
-      exception = e;
       threwException = true;
     }
     expect(threwException).toEqual(false);
 
-    let renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance);
-    let choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
+    const renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance) as Element;
+    const choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
 
     expect((choiceOptions[0] as HTMLInputElement).disabled).toEqual(true);
     expect((choiceOptions[1] as HTMLInputElement).disabled).toEqual(false);
@@ -103,7 +111,6 @@ describe('ChoiceGroup', () => {
       { key: '2', text: '2' },
       { key: '3', text: '3' }
     ];
-    let exception;
     let threwException = false;
     let choiceGroup;
     try {
@@ -116,13 +123,12 @@ describe('ChoiceGroup', () => {
         />
       );
     } catch (e) {
-      exception = e;
       threwException = true;
     }
     expect(threwException).toEqual(false);
 
-    let renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance);
-    let choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
+    const renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance) as Element;
+    const choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
 
     expect((choiceOptions[0] as HTMLInputElement).disabled).toEqual(true);
     expect((choiceOptions[1] as HTMLInputElement).disabled).toEqual(true);
@@ -130,14 +136,14 @@ describe('ChoiceGroup', () => {
   });
 
   it('can act as an uncontrolled component', () => {
-    let choiceGroup = ReactTestUtils.renderIntoDocument<ChoiceGroup>(
+    const choiceGroup = ReactTestUtils.renderIntoDocument<ChoiceGroup>(
       <ChoiceGroup
         defaultSelectedKey='1'
         options={ TEST_OPTIONS }
       />
     );
-    let renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance);
-    let choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
+    const renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance) as Element;
+    const choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
 
     expect((choiceOptions[0] as HTMLInputElement).checked).toEqual(true);
 
@@ -152,15 +158,15 @@ describe('ChoiceGroup', () => {
       _selectedItem = item;
     };
 
-    let choiceGroup = ReactTestUtils.renderIntoDocument<ChoiceGroup>(
+    const choiceGroup = ReactTestUtils.renderIntoDocument<ChoiceGroup>(
       <ChoiceGroup
         selectedKey='1'
         options={ TEST_OPTIONS }
         onChange={ onChange }
       />
     );
-    let renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance);
-    let choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
+    const renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance) as Element;
+    const choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
 
     expect((choiceOptions[0] as HTMLInputElement).checked).toEqual(true);
 
@@ -173,10 +179,7 @@ describe('ChoiceGroup', () => {
   });
 
   it('extra <input> attributes appear in dom if specified', () => {
-    let _selectedItem;
-    const onChange = (ev: React.FormEvent<HTMLElement | HTMLInputElement>, item: IChoiceGroupOption | undefined): void => {
-      _selectedItem = item;
-    };
+    const onChange = (ev: React.FormEvent<HTMLElement | HTMLInputElement>, item: IChoiceGroupOption | undefined): void => undefined;
 
     const choiceGroup = ReactTestUtils.renderIntoDocument<ChoiceGroup>(
       <ChoiceGroup
@@ -184,7 +187,7 @@ describe('ChoiceGroup', () => {
         onChange={ onChange }
       />
     );
-    const renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance);
+    const renderedDOM = ReactDOM.findDOMNode(choiceGroup as React.ReactInstance) as Element;
     const choiceOptions = renderedDOM.querySelectorAll(QUERY_SELECTOR);
 
     const extraAttributeGetter: (index: number) => string | null = (index: number): string | null => {

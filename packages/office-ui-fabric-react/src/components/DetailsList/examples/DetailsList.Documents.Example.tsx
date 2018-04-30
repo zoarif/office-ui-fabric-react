@@ -1,15 +1,13 @@
-/* tslint:disable:no-unused-variable */
 import * as React from 'react';
-/* tslint:enable:no-unused-variable */
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import { Toggle } from 'office-ui-fabric-react/lib/Toggle';
 import {
   DetailsList,
   DetailsListLayoutMode,
   Selection,
+  SelectionMode,
   IColumn
 } from 'office-ui-fabric-react/lib/DetailsList';
-import { autobind } from 'office-ui-fabric-react/lib/Utilities';
 import { MarqueeSelection } from 'office-ui-fabric-react/lib/MarqueeSelection';
 import { lorem } from '@uifabric/example-app-base';
 import './DetailsListExample.scss';
@@ -46,6 +44,7 @@ export interface IDetailsListDocumentsExampleState {
   columns: IColumn[];
   items: IDocument[];
   selectionDetails: string;
+  isModalSelection: boolean;
   isCompactMode: boolean;
 }
 
@@ -103,6 +102,7 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
         fieldName: 'name',
         minWidth: 16,
         maxWidth: 16,
+        onColumnClick: this._onColumnClick,
         onRender: (item: IDocument) => {
           return (
             <img
@@ -137,9 +137,7 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
         data: 'number',
         onRender: (item: IDocument) => {
           return (
-            <span
-              data-is-focusable={ true }
-            >
+            <span>
               { item.dateModified }
             </span>
           );
@@ -153,13 +151,12 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
         minWidth: 70,
         maxWidth: 90,
         isResizable: true,
+        isCollapsable: true,
         data: 'string',
         onColumnClick: this._onColumnClick,
         onRender: (item: IDocument) => {
           return (
-            <span
-              data-is-focusable={ true }
-            >
+            <span>
               { item.modifiedBy }
             </span>
           );
@@ -173,13 +170,12 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
         minWidth: 70,
         maxWidth: 90,
         isResizable: true,
+        isCollapsable: true,
         data: 'number',
         onColumnClick: this._onColumnClick,
         onRender: (item: IDocument) => {
           return (
-            <span
-              data-is-focusable={ true }
-            >
+            <span>
               { item.fileSize }
             </span>
           );
@@ -188,27 +184,40 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
     ];
 
     this._selection = new Selection({
-      onSelectionChanged: () => this.setState({ selectionDetails: this._getSelectionDetails() })
+      onSelectionChanged: () => {
+        this.setState({
+          selectionDetails: this._getSelectionDetails(),
+          isModalSelection: this._selection.isModal()
+        });
+      }
     });
 
     this.state = {
       items: _items,
       columns: _columns,
       selectionDetails: this._getSelectionDetails(),
+      isModalSelection: this._selection.isModal(),
       isCompactMode: false
     };
   }
 
   public render() {
-    let { columns, isCompactMode, items, selectionDetails } = this.state;
+    const { columns, isCompactMode, items, selectionDetails } = this.state;
 
     return (
       <div>
         <Toggle
           label='Enable Compact Mode'
           checked={ isCompactMode }
-          onChanged={ this._onChangeToggle }
+          onChanged={ this._onChangeCompactMode }
           onText='Compact'
+          offText='Normal'
+        />
+        <Toggle
+          label='Enable Modal Selection'
+          checked={ this.state.isModalSelection }
+          onChanged={ this._onChangeModalSelection }
+          onText='Modal'
           offText='Normal'
         />
         <div>{ selectionDetails }</div>
@@ -221,25 +230,35 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
             items={ items }
             compact={ isCompactMode }
             columns={ columns }
+            selectionMode={ this.state.isModalSelection ? SelectionMode.multiple : SelectionMode.none }
             setKey='set'
             layoutMode={ DetailsListLayoutMode.justified }
             isHeaderVisible={ true }
             selection={ this._selection }
             selectionPreservedOnEmptyClick={ true }
             onItemInvoked={ this._onItemInvoked }
+            enterModalSelectionOnTouch={ true }
           />
         </MarqueeSelection>
       </div>
     );
   }
 
-  @autobind
-  private _onChangeToggle(checked: boolean): void {
+  public componentDidUpdate(previousProps: any, previousState: IDetailsListDocumentsExampleState) {
+    if (previousState.isModalSelection !== this.state.isModalSelection) {
+      this._selection.setModal(this.state.isModalSelection);
+    }
+  }
+
+  private _onChangeCompactMode = (checked: boolean): void => {
     this.setState({ isCompactMode: checked });
   }
 
-  @autobind
-  private _onChangeText(text: any): void {
+  private _onChangeModalSelection = (checked: boolean): void => {
+    this.setState({ isModalSelection: checked });
+  }
+
+  private _onChangeText = (text: any): void => {
     this.setState({ items: text ? _items.filter(i => i.name.toLowerCase().indexOf(text) > -1) : _items });
   }
 
@@ -273,7 +292,7 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
   }
 
   private _getSelectionDetails(): string {
-    let selectionCount = this._selection.getSelectedCount();
+    const selectionCount = this._selection.getSelectedCount();
 
     switch (selectionCount) {
       case 0:
@@ -285,12 +304,11 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
     }
   }
 
-  @autobind
-  private _onColumnClick(ev: React.MouseEvent<HTMLElement>, column: IColumn) {
+  private _onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
     const { columns, items } = this.state;
     let newItems: IDocument[] = items.slice();
-    let newColumns: IColumn[] = columns.slice();
-    let currColumn: IColumn = newColumns.filter((currCol: IColumn, idx: number) => {
+    const newColumns: IColumn[] = columns.slice();
+    const currColumn: IColumn = newColumns.filter((currCol: IColumn, idx: number) => {
       return column.key === currCol.key;
     })[0];
     newColumns.forEach((newCol: IColumn) => {
@@ -309,8 +327,7 @@ export class DetailsListDocumentsExample extends React.Component<any, IDetailsLi
     });
   }
 
-  @autobind
-  private _sortItems(items: IDocument[], sortBy: string, descending = false): IDocument[] {
+  private _sortItems = (items: IDocument[], sortBy: string, descending = false): IDocument[] => {
     if (descending) {
       return items.sort((a: IDocument, b: IDocument) => {
         if (a[sortBy] < b[sortBy]) {

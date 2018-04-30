@@ -1,14 +1,8 @@
-/* tslint:disable:no-unused-variable */
 import * as React from 'react';
-/* tslint:enable:no-unused-variable */
+import * as renderer from 'react-test-renderer';
 
 import { CommandBar } from './CommandBar';
-import * as renderer from 'react-test-renderer';
 import { mount } from 'enzyme';
-import { setIconOptions } from 'office-ui-fabric-react/lib/Styling';
-
-// Disable icon warnings.
-setIconOptions({ warnOnMissingIcons: false });
 
 describe('CommandBar', () => {
 
@@ -28,12 +22,13 @@ describe('CommandBar', () => {
           { key: '1', name: 'asdf' },
           { key: '2', name: 'asdf' }
         ] }
+        className={ 'TestClassName' }
       />
     ).toJSON()).toMatchSnapshot();
   });
 
   it('opens a menu with IContextualMenuItem.subMenuProps.items property', () => {
-    const commandBar = mount<CommandBar>(
+    const commandBar = mount(
       <CommandBar
         items={ [
           {
@@ -84,7 +79,7 @@ describe('CommandBar', () => {
       />
     );
 
-    let menuItem = commandBar.find('button');
+    const menuItem = commandBar.find('button');
 
     menuItem.simulate('click');
 
@@ -126,7 +121,7 @@ describe('CommandBar', () => {
       />
     );
 
-    let menuItem = commandBar.find('button');
+    const menuItem = commandBar.find('button');
 
     menuItem.simulate('click');
 
@@ -143,7 +138,7 @@ describe('CommandBar', () => {
   });
 
   it('updates menu after update if item is still present', () => {
-    let items = [
+    const items = [
       {
         name: 'TestText 1',
         key: 'TestKey1',
@@ -165,7 +160,7 @@ describe('CommandBar', () => {
       />
     );
 
-    let menuItem = commandBar.find('button');
+    const menuItem = commandBar.find('button');
 
     menuItem.simulate('click');
 

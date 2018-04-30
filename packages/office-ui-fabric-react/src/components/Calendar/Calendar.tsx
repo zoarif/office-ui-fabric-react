@@ -1,26 +1,33 @@
 import * as React from 'react';
-import { ICalendar, ICalendarProps, ICalendarStrings, ICalendarIconStrings, ICalendarFormatDateCallbacks } from './Calendar.Props';
-import { DayOfWeek, DateRangeType } from '../../utilities/dateValues/DateValues';
-import { CalendarDay } from './CalendarDay';
-import { CalendarMonth } from './CalendarMonth';
+import { ICalendar, ICalendarProps, ICalendarStrings, ICalendarIconStrings, ICalendarFormatDateCallbacks } from './Calendar.types';
+import { DayOfWeek, FirstWeekOfYear, DateRangeType } from '../../utilities/dateValues/DateValues';
+import { CalendarDay, ICalendarDay } from './CalendarDay';
+import { CalendarMonth, ICalendarMonth } from './CalendarMonth';
 import { compareDates, getDateRangeArray } from '../../utilities/dateMath/DateMath';
 import {
-  autobind,
   css,
   BaseComponent,
-  KeyCodes
+  KeyCodes,
+  createRef
 } from '../../Utilities';
 import * as stylesImport from './Calendar.scss';
 const styles: any = stylesImport;
 
-const leftArrow: string = 'Up';
-const rightArrow: string = 'Down';
-let iconStrings: ICalendarIconStrings = {
+const leftArrow = 'Up';
+const rightArrow = 'Down';
+const iconStrings: ICalendarIconStrings = {
   leftNavigation: leftArrow,
   rightNavigation: rightArrow
 };
+const defaultWorkWeekDays: DayOfWeek[] = [
+  DayOfWeek.Monday,
+  DayOfWeek.Tuesday,
+  DayOfWeek.Wednesday,
+  DayOfWeek.Thursday,
+  DayOfWeek.Friday,
+];
 
-let dateTimeFormatterCallbacks: ICalendarFormatDateCallbacks = {
+const dateTimeFormatterCallbacks: ICalendarFormatDateCallbacks = {
   formatMonthDayYear: (date: Date, strings: ICalendarStrings) => (strings.months[date.getMonth()] + ' ' + date.getDate() + ', ' + date.getFullYear()),
   formatMonthYear: (date: Date, strings: ICalendarStrings) => (strings.months[date.getMonth()] + ' ' + date.getFullYear()),
   formatDay: (date: Date) => date.getDate().toString(),
@@ -56,23 +63,23 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
     showGoToToday: true,
     strings: null,
     highlightCurrentMonth: false,
+    highlightSelectedMonth: false,
     navigationIcons: iconStrings,
     showWeekNumbers: false,
-    dateTimeFormatter: dateTimeFormatterCallbacks
+    firstWeekOfYear: FirstWeekOfYear.FirstDay,
+    dateTimeFormatter: dateTimeFormatterCallbacks,
+    showSixWeeksByDefault: false,
+    workWeekDays: defaultWorkWeekDays
   };
 
-  public refs: {
-    [key: string]: React.ReactInstance;
-    root: HTMLElement;
-    dayPicker: CalendarDay;
-    monthPicker: CalendarMonth;
-  };
+  private _dayPicker = createRef<ICalendarDay>();
+  private _monthPicker = createRef<ICalendarMonth>();
 
   private _focusOnUpdate: boolean;
 
   constructor(props: ICalendarProps) {
     super(props);
-    let currentDate = props.value && !isNaN(props.value.getTime()) ? props.value : (props.today || new Date());
+    const currentDate = props.value && !isNaN(props.value.getTime()) ? props.value : (props.today || new Date());
 
     this.state = {
       selectedDate: currentDate,
@@ -86,12 +93,12 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
     this._focusOnUpdate = false;
   }
 
-  public componentWillReceiveProps(nextProps: ICalendarProps) {
-    let { autoNavigateOnSelection, value, today = new Date() } = nextProps;
+  public componentWillReceiveProps(nextProps: ICalendarProps): void {
+    const { autoNavigateOnSelection, value, today = new Date() } = nextProps;
 
     // Make sure auto-navigation is supported for programmatic changes to selected date, i.e.,
     // if selected date is updated via props, we may need to modify the navigated date
-    let overrideNavigatedDate = (autoNavigateOnSelection && !compareDates(value!, this.props.value!));
+    const overrideNavigatedDate = (autoNavigateOnSelection && !compareDates(value!, this.props.value!));
     if (overrideNavigatedDate) {
       this.setState({
         navigatedDate: value
@@ -103,27 +110,28 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
     });
   }
 
-  public componentDidUpdate() {
+  public componentDidUpdate(): void {
     if (this._focusOnUpdate) {
       // if the day picker is shown, focus on it
-      if (this.refs.dayPicker) {
-        this.refs.dayPicker.focus();
-      } else if (this.refs.monthPicker) {
-        this.refs.monthPicker.focus();
+      if (this._dayPicker.current) {
+        this._dayPicker.current.focus();
+      } else if (this._monthPicker.current) {
+        this._monthPicker.current.focus();
       }
       this._focusOnUpdate = false;
     }
   }
 
-  public render() {
-    let rootClass = 'ms-DatePicker';
-    let { firstDayOfWeek, dateRangeType, strings, showMonthPickerAsOverlay, autoNavigateOnSelection, showGoToToday, highlightCurrentMonth, navigationIcons } = this.props;
-    let { selectedDate, navigatedDate, isMonthPickerVisible, isDayPickerVisible } = this.state;
-    let onHeaderSelect = showMonthPickerAsOverlay ? this._onHeaderSelect : undefined;
-    let monthPickerOnly = !showMonthPickerAsOverlay && !isDayPickerVisible;
+  public render(): JSX.Element {
+    const rootClass = 'ms-DatePicker';
+    const { firstDayOfWeek, dateRangeType, strings, showMonthPickerAsOverlay, autoNavigateOnSelection, showGoToToday, highlightCurrentMonth, highlightSelectedMonth, navigationIcons, minDate, maxDate, className } = this.props;
+    const { selectedDate, navigatedDate, isMonthPickerVisible, isDayPickerVisible } = this.state;
+    const onHeaderSelect = showMonthPickerAsOverlay ? this._onHeaderSelect : undefined;
+    const monthPickerOnly = !showMonthPickerAsOverlay && !isDayPickerVisible;
+    const overlayedWithButton = showMonthPickerAsOverlay && showGoToToday;
 
     return (
-      <div className={ css(rootClass, styles.root) } ref='root' role='application'>
+      <div className={ css(rootClass, styles.root, className) } role='application'>
         <div
           className={ css(
             'ms-DatePicker-picker ms-DatePicker-picker--opened ms-DatePicker-picker--focused',
@@ -136,7 +144,7 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
             showMonthPickerAsOverlay && ('ms-DatePicker-monthPickerAsOverlay ' + styles.monthPickerAsOverlay),
           ) }
         >
-          <div className={ css('ms-DatePicker-holder ms-slideDownIn10', styles.holder) } onKeyDown={ this._onDatePickerPopupKeyDown }>
+          <div className={ css('ms-DatePicker-holder ms-slideDownIn10', styles.holder, overlayedWithButton && styles.holderWithButton) } onKeyDown={ this._onDatePickerPopupKeyDown }>
             <div className={ css('ms-DatePicker-frame', styles.frame) }>
               <div className={ css('ms-DatePicker-wrap', styles.wrap, showGoToToday && styles.goTodaySpacing) }>
                 { isDayPickerVisible && <CalendarDay
@@ -153,25 +161,34 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
                   onHeaderSelect={ onHeaderSelect }
                   navigationIcons={ navigationIcons! }
                   showWeekNumbers={ this.props.showWeekNumbers }
+                  firstWeekOfYear={ this.props.firstWeekOfYear! }
                   dateTimeFormatter={ this.props.dateTimeFormatter! }
-                  ref='dayPicker'
+                  showSixWeeksByDefault={ this.props.showSixWeeksByDefault }
+                  minDate={ minDate }
+                  maxDate={ maxDate }
+                  workWeekDays={ this.props.workWeekDays }
+                  componentRef={ this._dayPicker }
                 />
                 }
 
                 { isMonthPickerVisible && <CalendarMonth
                   navigatedDate={ navigatedDate! }
+                  selectedDate={ selectedDate! }
                   strings={ strings! }
                   onNavigateDate={ this._onNavigateDate }
                   today={ this.props.today }
                   highlightCurrentMonth={ highlightCurrentMonth! }
+                  highlightSelectedMonth={ highlightSelectedMonth! }
                   onHeaderSelect={ onHeaderSelect }
                   navigationIcons={ navigationIcons! }
                   dateTimeFormatter={ this.props.dateTimeFormatter! }
-                  ref='monthPicker'
+                  minDate={ minDate }
+                  maxDate={ maxDate }
+                  componentRef={ this._monthPicker }
                 /> }
 
                 { showGoToToday &&
-                  <span
+                  <button
                     role='button'
                     className={ css('ms-DatePicker-goToday js-goToday', styles.goToday) }
                     onClick={ this._onGotoToday }
@@ -179,7 +196,7 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
                     tabIndex={ 0 }
                   >
                     { strings!.goToToday }
-                  </span>
+                  </button>
                 }
               </div>
             </div>
@@ -190,21 +207,18 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
   }
 
   public focus() {
-    if (this.refs.dayPicker) {
-      this.refs.dayPicker.focus();
+    if (this._dayPicker.current) {
+      this._dayPicker.current.focus();
     }
   }
 
-  @autobind
-  private _navigateDay(date: Date) {
+  private _navigateDay = (date: Date): void => {
     this.setState({
       navigatedDate: date
     });
   }
 
-  @autobind
-  private _onNavigateDate(date: Date, focusOnNavigatedDay: boolean) {
-
+  private _onNavigateDate = (date: Date, focusOnNavigatedDay: boolean): void => {
     if (this.props.isDayPickerVisible || (!this.props.isDayPickerVisible && !focusOnNavigatedDay)) {
       this._navigateDay(date);
       this._focusOnUpdate = focusOnNavigatedDay;
@@ -214,9 +228,8 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
     }
   }
 
-  @autobind
-  private _onSelectDate(date: Date, selectedDateRangeArray?: Date[]) {
-    let { onSelectDate } = this.props;
+  private _onSelectDate = (date: Date, selectedDateRangeArray?: Date[]): void => {
+    const { onSelectDate } = this.props;
 
     this.setState({
       selectedDate: date
@@ -227,8 +240,7 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
     }
   }
 
-  @autobind
-  private _onHeaderSelect(focus: boolean) {
+  private _onHeaderSelect = (focus: boolean): void => {
     this.setState({
       isDayPickerVisible: !this.state.isDayPickerVisible,
       isMonthPickerVisible: !this.state.isMonthPickerVisible
@@ -239,20 +251,16 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
     }
   }
 
-  @autobind
-  private _onGotoToday() {
+  private _onGotoToday = (): void => {
+    const { dateRangeType, firstDayOfWeek, today, workWeekDays } = this.props;
 
-    let { dateRangeType, firstDayOfWeek, today } = this.props;
-
-    let dates = getDateRangeArray(today!, dateRangeType!, firstDayOfWeek!);
+    const dates = getDateRangeArray(today!, dateRangeType!, firstDayOfWeek!, workWeekDays!);
 
     this._onSelectDate(today!, dates);
-
   }
 
-  @autobind
-  private _onGotoTodayKeyDown(ev: React.KeyboardEvent<HTMLElement>) {
-    if (ev.which === KeyCodes.enter || ev.which === KeyCodes.space) {
+  private _onGotoTodayKeyDown = (ev: React.KeyboardEvent<HTMLElement>): void => {
+    if (ev.which === KeyCodes.enter) {
       ev.preventDefault();
       this._onGotoToday();
     } else if (ev.which === KeyCodes.tab && !ev.shiftKey) {
@@ -264,8 +272,7 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
     }
   }
 
-  @autobind
-  private _onDatePickerPopupKeyDown(ev: React.KeyboardEvent<HTMLElement>) {
+  private _onDatePickerPopupKeyDown = (ev: React.KeyboardEvent<HTMLElement>): void => {
     switch (ev.which) {
       case KeyCodes.enter:
         ev.preventDefault();
@@ -284,8 +291,7 @@ export class Calendar extends BaseComponent<ICalendarProps, ICalendarState> impl
     }
   }
 
-  @autobind
-  private _handleEscKey(ev: React.KeyboardEvent<HTMLElement>) {
+  private _handleEscKey = (ev: React.KeyboardEvent<HTMLElement>): void => {
     if (this.props.onDismiss) {
       this.props.onDismiss();
     }

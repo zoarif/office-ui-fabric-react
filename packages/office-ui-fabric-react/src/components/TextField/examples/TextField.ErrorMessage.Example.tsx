@@ -12,9 +12,9 @@ export class TextFieldErrorMessageExample extends React.Component<{}, {}> {
     this._getErrorMessagePromise = this._getErrorMessagePromise.bind(this);
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
-      <div className='ms-TextFieldExample'>
+      <div className='docs-TextFieldErrorExample'>
         <TextField
           label='TextField with a string-based validator. Hint: the length of the input string must be less than 3.'
           onGetErrorMessage={ this._getErrorMessage }

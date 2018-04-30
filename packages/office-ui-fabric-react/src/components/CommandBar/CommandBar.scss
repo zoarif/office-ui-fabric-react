@@ -98,6 +98,7 @@ $SearchBox-sidePadding: 8px; // padding in input on left and right sides without
 
   position: relative;
   background: none;
+  background-color: transparent;
   border: none;
   line-height: $CommandBarItem-height;
   min-width: 20px;
@@ -108,6 +109,16 @@ $SearchBox-sidePadding: 8px; // padding in input on left and right sides without
 
   &.itemLinkIsNoName {
     padding: 0 8px;
+  }
+
+  &[disabled] {
+    color: $ms-color-neutralTertiaryAlt;
+    cursor: default;
+    pointer-events: none;
+    .itemIcon,
+    .itemChevronDown {
+      color: $ms-color-neutralTertiaryAlt;
+    }
   }
 }
 
@@ -163,7 +174,7 @@ $SearchBox-sidePadding: 8px; // padding in input on left and right sides without
     background-color: $ms-color-neutralQuaternary;
   }
 
-  &[disabled] {
+  &.inactive {
     color: $ms-color-neutralTertiaryAlt;
     cursor: default;
     pointer-events: none;

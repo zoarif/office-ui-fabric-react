@@ -9,9 +9,9 @@ export interface IChoiceGroupImageExampleState {
   selectedKey: string;
 }
 
-export class ChoiceGroupImageExample extends React.Component<any, IChoiceGroupImageExampleState> {
-  constructor() {
-    super();
+export class ChoiceGroupImageExample extends React.Component<{}, IChoiceGroupImageExampleState> {
+  constructor(props: {}) {
+    super(props);
 
     this.state = {
       selectedKey: 'bar'
@@ -20,8 +20,8 @@ export class ChoiceGroupImageExample extends React.Component<any, IChoiceGroupIm
     this._onImageChoiceGroupChange = this._onImageChoiceGroupChange.bind(this);
   }
 
-  public render() {
-    let { selectedKey } = this.state;
+  public render(): JSX.Element {
+    const { selectedKey } = this.state;
 
     return (
       <div>
@@ -32,9 +32,10 @@ export class ChoiceGroupImageExample extends React.Component<any, IChoiceGroupIm
             {
               key: 'bar',
               imageSrc: TestImages.choiceGroupBarUnselected,
+              imageAlt: 'Bar chart icon',
               selectedImageSrc: TestImages.choiceGroupBarSelected,
               imageSize: { width: 32, height: 32 },
-              text: 'Bar chart'
+              text: 'Clustered bar chart' // This text is long to show text wrapping.
             },
             {
               key: 'pie',
@@ -50,7 +51,7 @@ export class ChoiceGroupImageExample extends React.Component<any, IChoiceGroupIm
     );
   }
 
-  private _onImageChoiceGroupChange(ev: React.SyntheticEvent<HTMLElement>, option: IChoiceGroupOption) {
+  private _onImageChoiceGroupChange(ev: React.SyntheticEvent<HTMLElement>, option: IChoiceGroupOption): void {
     this.setState({
       selectedKey: option.key
     });

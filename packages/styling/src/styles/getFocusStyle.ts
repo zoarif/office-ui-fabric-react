@@ -1,6 +1,7 @@
 import { IRawStyle } from '@uifabric/merge-styles/lib/index';
 import { ITheme } from '../interfaces/index';
-
+import { HighContrastSelector } from './CommonStyles';
+import { IsFocusVisibleClassName } from '@uifabric/utilities/lib/index';
 /**
  * Generates a focus style which can be used to define an :after focus border.
  *
@@ -9,12 +10,14 @@ import { ITheme } from '../interfaces/index';
  * @param color - The color for the border.
  * @param position - The positioning applied to the container. Must
  * be 'relative' or 'absolute' so that the focus border can live around it.
+ * @param highContrastStyle - Style for high contrast mode.
  * @returns The style object.
  */
 export function getFocusStyle(
   theme: ITheme,
   inset: number = 0,
-  position: 'relative' | 'absolute' = 'relative'
+  position: 'relative' | 'absolute' = 'relative',
+  highContrastStyle: IRawStyle | undefined = undefined
 ): IRawStyle {
   return {
     outline: 'transparent',
@@ -26,7 +29,7 @@ export function getFocusStyle(
         border: '0'
       },
 
-      '.ms-Fabric.is-focusVisible &:focus:after': {
+      [`.${IsFocusVisibleClassName} &:focus:after`]: {
         content: '""',
         position: 'absolute',
         left: inset + 1,
@@ -35,9 +38,30 @@ export function getFocusStyle(
         right: inset + 1,
         border: '1px solid ' + theme.palette.white,
         outline: '1px solid ' + theme.palette.neutralSecondary,
-        zIndex: 1
+        zIndex: 1,
+        selectors: {
+          [HighContrastSelector]: highContrastStyle
+        }
       }
 
+    }
+  };
+}
+
+/**
+ * Generates style to clear browser specific focus styles.
+ */
+export function focusClear(): IRawStyle {
+  return {
+    selectors: {
+      '&::-moz-focus-inner': {
+        // Clear the focus border in Firefox. Reference: http://stackoverflow.com/a/199319/1436671
+        border: 0
+      },
+      '&': {
+        // Clear browser specific focus styles and use transparent as placeholder for focus style
+        outline: 'transparent'
+      }
     }
   };
 }

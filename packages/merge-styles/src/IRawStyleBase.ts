@@ -174,6 +174,11 @@ export interface IRawStyleBase extends IRawFontStyle {
   WebkitFontSmoothing?: 'none' | 'antialiased' | 'grayscale' | 'subpixel-antialiased';
 
   /**
+   * (Webkit specific) momentum scrolling on iOS devices
+   */
+  WebkitOverflowScrolling?: 'auto' | 'touch';
+
+  /**
    * Aligns a flex container's lines within the flex container when there is extra space
    * in the cross-axis, similar to how justify-content aligns individual items within the main-axis.
    */
@@ -207,6 +212,14 @@ export interface IRawStyleBase extends IRawFontStyle {
    * value of the alignment-baseline property.
    */
   alignmentBaseline?: ICSSRule | string;
+
+  /**
+   * The animation CSS property is a shorthand property for the various animation properties:
+   * `animation-name`, `animation-duration`, `animation-timing-function`, `animation-delay`,
+   * `animation-iteration-count`, `animation-direction`, `animation-fill-mode`, and
+   * `animation-play-state`.
+   */
+  animation?: ICSSRule | string;
 
   /**
    * Defines a length of time to elapse before an animation starts, allowing an animation to begin execution some time after it is applied.
@@ -287,6 +300,16 @@ export interface IRawStyleBase extends IRawFontStyle {
    * used value by repeating the list of values until there are enough.
    */
   backgroundBlendMode?: ICSSRule | string;
+
+  /**
+   * The background-clip CSS property specifies if an element's background, whether a
+   * <color> or an <image>, extends underneath its border.
+   *
+   * \* Does not work in IE
+   *
+   * \* The `text` value is experimental and should not be used in production code.
+   */
+  backgroundClip?: ICSSRule | 'border-box' | 'padding-box' | 'content-box' | 'text';
 
   /**
    * Sets the background color of an element.
@@ -1053,14 +1076,14 @@ export interface IRawStyleBase extends IRawFontStyle {
    * used when the text-align-last property is set to size. It controls allowed
    * adjustments of font-size to fit line content.
    */
-  maxFontSize?: ICSSRule | string;
+  maxFontSize?: ICSSRule | ICSSPixelUnitRule;
 
   /**
    * Sets the maximum height for an element. It prevents the height of the element to
    *  exceed the specified value. If min-height is specified and is greater than
    * max-height, max-height is overridden.
    */
-  maxHeight?: ICSSRule | string;
+  maxHeight?: ICSSRule | ICSSPixelUnitRule;
 
   /**
    * Sets the maximum width for an element. It limits the width property to be larger
@@ -1364,6 +1387,12 @@ export interface IRawStyleBase extends IRawFontStyle {
    * sequence of digits, punctuation as pauses in speech or named punctuation characters.
    */
   speakAs?: ICSSRule | string;
+
+  /**
+   * The stroke property in CSS is for adding a border to SVG shapes.
+   * See SVG 1.1 https://www.w3.org/TR/SVG/painting.html#Stroke
+   */
+  stroke?: ICSSRule | string;
 
   /**
    * SVG: Specifies the opacity of the outline on the current object.

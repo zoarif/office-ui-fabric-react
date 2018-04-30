@@ -2,10 +2,11 @@ import * as React from 'react';
 import {
   BaseComponent,
   css,
-  getId
+  getId,
+  createRef
 } from '../../Utilities';
-import { FocusTrapZone } from '../FocusTrapZone/index';
-import { IModalProps } from './Modal.Props';
+import { FocusTrapZone, IFocusTrapZone } from '../FocusTrapZone/index';
+import { IModalProps, IModal } from './Modal.types';
 import { Overlay } from '../../Overlay';
 import { Layer } from '../../Layer';
 import { Popup } from '../Popup/index';
@@ -23,7 +24,7 @@ export interface IDialogState {
 }
 
 @withResponsiveMode
-export class Modal extends BaseComponent<IModalProps, IDialogState> {
+export class Modal extends BaseComponent<IModalProps, IDialogState> implements IModal {
 
   public static defaultProps: IModalProps = {
     isOpen: false,
@@ -34,6 +35,7 @@ export class Modal extends BaseComponent<IModalProps, IDialogState> {
   };
 
   private _onModalCloseTimer: number;
+  private _focusTrapZone = createRef<IFocusTrapZone>();
 
   constructor(props: IModalProps) {
     super(props);
@@ -44,7 +46,7 @@ export class Modal extends BaseComponent<IModalProps, IDialogState> {
     };
   }
 
-  public componentWillReceiveProps(newProps: IModalProps) {
+  public componentWillReceiveProps(newProps: IModalProps): void {
     clearTimeout(this._onModalCloseTimer);
 
     // Opening the dialog
@@ -80,7 +82,7 @@ export class Modal extends BaseComponent<IModalProps, IDialogState> {
   }
 
   public render(): JSX.Element | null {
-    let {
+    const {
       elementToFocusOnDismiss,
       firstFocusableSelector,
       forceFocusInsideTrap,
@@ -94,7 +96,7 @@ export class Modal extends BaseComponent<IModalProps, IDialogState> {
       titleAriaId,
       subtitleAriaId,
     } = this.props;
-    let { isOpen, isVisible } = this.state;
+    const { isOpen, isVisible } = this.state;
 
     const modalClassName = css(
       'ms-Modal',
@@ -121,6 +123,7 @@ export class Modal extends BaseComponent<IModalProps, IDialogState> {
             <div className={ modalClassName }>
               <Overlay isDarkThemed={ isDarkOverlay } onClick={ isBlocking ? undefined : (onDismiss as any) } />
               <FocusTrapZone
+                componentRef={ this._focusTrapZone }
                 className={ css('ms-Dialog-main', styles.main, this.props.containerClassName) }
                 elementToFocusOnDismiss={ elementToFocusOnDismiss }
                 isClickableOutsideFocusTrap={ isClickableOutsideFocusTrap ? isClickableOutsideFocusTrap : !isBlocking }
@@ -138,8 +141,14 @@ export class Modal extends BaseComponent<IModalProps, IDialogState> {
     return null;
   }
 
+  public focus() {
+    if (this._focusTrapZone.current) {
+      this._focusTrapZone.current.focus();
+    }
+  }
+
   // Watch for completed animations and set the state
-  private _onModalClose() {
+  private _onModalClose(): void {
     this.setState({
       isOpen: false
     });

@@ -8,15 +8,14 @@ export class NavBasicExample extends React.Component<any, any> {
     this._onClickHandler = this._onClickHandler.bind(this);
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <div className='ms-NavExample-LeftPane'>
         <Nav
           groups={
             [
               {
-                links:
-                [
+                links: [
                   {
                     name: 'Home',
                     url: 'http://example.com',
@@ -35,13 +34,20 @@ export class NavBasicExample extends React.Component<any, any> {
                   { name: 'Documents', url: 'http://example.com', key: 'key3', isExpanded: true },
                   { name: 'Pages', url: 'http://msn.com', key: 'key4' },
                   { name: 'Notebook', url: 'http://msn.com', key: 'key5' },
-                  { name: 'Long Name Test for elipse', url: 'http://msn.com', key: 'key6' },
+                  { name: 'Long Name Test for ellipse', url: 'http://msn.com', key: 'key6' },
                   {
                     name: 'Edit',
                     url: 'http://cnn.com',
                     onClick: this._onClickHandler2,
                     icon: 'Edit',
                     key: 'key8'
+                  },
+                  {
+                    name: 'Delete',
+                    url: 'http://cnn.com',
+                    onClick: this._onClickHandler2,
+                    iconProps: { iconName: 'Delete' },
+                    key: 'key9'
                   }
                 ]
               }
@@ -55,12 +61,12 @@ export class NavBasicExample extends React.Component<any, any> {
     );
   }
 
-  private _onClickHandler(e: React.MouseEvent<HTMLElement>) {
+  private _onClickHandler(e: React.MouseEvent<HTMLElement>): false {
     alert('test');
     return false;
   }
 
-  private _onClickHandler2(e: React.MouseEvent<HTMLElement>) {
+  private _onClickHandler2(e: React.MouseEvent<HTMLElement>): false {
     return false;
   }
 }

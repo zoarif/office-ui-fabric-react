@@ -39,17 +39,17 @@ const COLUMNS: IColumn[] = [
   }
 ];
 
-export class FocusZoneListExample extends React.Component<any, any> {
+export class FocusZoneListExample extends React.Component {
   private _selection: Selection;
 
-  constructor() {
-    super();
+  constructor(props: {}) {
+    super(props);
 
     this._selection = new Selection();
     this._selection.setItems(ITEMS);
   }
 
-  public render() {
+  public render(): JSX.Element {
     return (
       <FocusZone
         className='ms-FocusZoneListExample'

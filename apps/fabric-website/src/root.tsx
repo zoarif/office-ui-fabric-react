@@ -1,3 +1,4 @@
+require('es6-promise').polyfill();
 /* tslint:disable:no-unused-variable */
 import * as React from 'react';
 /* tslint:enable:no-unused-variable */
@@ -10,10 +11,11 @@ import { setBaseUrl } from 'office-ui-fabric-react/lib/Utilities';
 import { HomePage } from './pages/HomePage/HomePage';
 import WindowWidthUtility from './utilities/WindowWidthUtility';
 import './styles/styles.scss';
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+const corePackageData = require('../node_modules/office-ui-fabric-core/package.json');
+const corePackageVersion: string = corePackageData && corePackageData.version || '9.2.0';
 
-import { initializeIcons } from '@uifabric/icons/lib/index';
-
-initializeIcons('./dist/');
+initializeIcons();
 
 let isProduction = process.argv.indexOf('--production') > -1;
 
@@ -57,7 +59,7 @@ function _hasAnchorLink(path: string): boolean {
   return (path.match(/#/g) || []).length > 1;
 }
 
-function _extractAnchorLink(path) {
+function _extractAnchorLink(path): string {
   let split = path.split('#');
   let cleanedSplit = split.filter((value) => {
     if (value === '') {
@@ -134,7 +136,7 @@ if (isReady) {
 
 window.onunload = _onUnload;
 
-function addCSSToHeader(fileName: string) {
+function addCSSToHeader(fileName: string): void {
   let headEl = document.head;
   let linkEl = document.createElement('link');
 
@@ -144,4 +146,4 @@ function addCSSToHeader(fileName: string) {
   headEl.appendChild(linkEl);
 }
 
-addCSSToHeader('https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/7.3.0/css/fabric.min.css');
+addCSSToHeader('https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/' + corePackageVersion + '/css/fabric.min.css');
